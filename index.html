@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maplewood Urban Planning Commission</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+:root{
+  --bg:#0d1117;--surface:#161b27;--surface2:#1e2438;
+  --border:#2a3350;--border2:#3a4470;
+  --text:#e4e8f4;--text2:#8890b0;--text3:#555e80;
+  --accent:#6c63ff;--accent2:#4fd1c5;--gold:#f6c90e;
+  --green:#4ade80;--red:#f87171;--amber:#fb923c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+.screen{display:none;min-height:100vh}.screen.active{display:block}
+button{font-family:'Instrument Sans',sans-serif;cursor:pointer}
+
+.city-header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.city-seal{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
+.city-title h1{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.city-title p{font-size:11px;color:var(--text2)}
+.cred-bar{margin-left:auto;display:flex;align-items:center;gap:6px}
+.cred-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.cred-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold)}
+
+.btn-primary{padding:9px 22px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;font-family:'Syne',sans-serif;transition:all .2s}
+.btn-primary:hover{background:#7c73ff;transform:translateY(-1px)}
+.btn-secondary{padding:8px 18px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:12px;font-weight:500;transition:all .2s}
+.btn-secondary:hover{background:var(--surface2);color:var(--text)}
+.btn-gold{padding:10px 26px;border-radius:10px;border:none;background:var(--gold);color:#111;font-size:13px;font-weight:700;font-family:'Syne',sans-serif;transition:all .2s}
+.btn-gold:hover{background:#ffe040;transform:translateY(-1px)}
+
+/* SCREEN 0 */
+#screen-hire{display:flex;align-items:center;justify-content:center;padding:30px 16px;min-height:100vh;background:radial-gradient(ellipse at 30% 20%,#1a1f3a 0%,#0d1117 70%)}
+.letter-wrap{max-width:600px;width:100%}
+.letterhead{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 0 60px #6c63ff18}
+.lh-top{background:linear-gradient(135deg,#6c63ff,#4fd1c5);padding:20px 26px;display:flex;align-items:center;gap:14px}
+.lh-seal{width:52px;height:52px;border-radius:50%;background:#fff2;border:2px solid #fff3;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;flex-shrink:0}
+.lh-org h2{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff}
+.lh-org p{font-size:11px;color:#ffffffaa;letter-spacing:.05em;text-transform:uppercase}
+.lh-body{padding:24px 28px}
+.lh-date{font-size:10px;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
+.lh-body p{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px}
+.lh-body strong{color:var(--text)}
+.lh-sign{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+.lh-sign .sig{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--accent);margin:5px 0 2px}
+.lh-sign p{font-size:11px;color:var(--text2)}
+.lh-cta{text-align:center;padding:18px 24px;border-top:1px solid var(--border);background:var(--surface2)}
+
+/* SCREEN 1 */
+#screen-brief{padding:0}
+.brief-nav{display:flex;gap:4px;padding:14px 18px 0;overflow-x:auto;border-bottom:1px solid var(--border);background:var(--surface)}
+.brief-tab{padding:7px 14px;border-radius:8px 8px 0 0;border:1px solid transparent;background:transparent;color:var(--text2);font-size:11px;font-weight:600;font-family:'Syne',sans-serif;white-space:nowrap;transition:all .2s;border-bottom:none;cursor:pointer}
+.brief-tab.active{background:var(--surface2);border-color:var(--border);color:var(--accent);border-bottom-color:var(--surface2)}
+.brief-tab.locked{opacity:.3;cursor:not-allowed}
+.brief-body{padding:18px;max-width:1060px;margin:0 auto}
+.brief-grid{display:grid;grid-template-columns:1fr 268px;gap:14px;align-items:start}
+.casefile{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.cf-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.cf-stamp{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:4px;border:1.5px solid currentColor;flex-shrink:0}
+.cf-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.cf-body{padding:16px 18px}
+.cf-era-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin-bottom:2px}
+.cf-year{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.cf-themes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.cf-theme{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid;font-weight:600}
+.cf-body p{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:10px}
+.cf-bidrent{background:var(--surface2);border-radius:8px;padding:10px 12px;border-left:3px solid var(--accent);margin-top:12px}
+.cf-br-label{font-size:9px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.cf-br-text{font-size:11px;color:var(--text2);line-height:1.6;margin:0}
+.brief-sidebar{display:flex;flex-direction:column;gap:10px}
+.map-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px}
+.map-card-title{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:6px}
+.map-wrap-inner{background:var(--surface2);border-radius:6px;padding:6px;width:100%}
+.leg-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:6px}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;border:1px solid #0003}
+.council-note{background:var(--surface);border:1px solid var(--amber);border-radius:10px;padding:11px 13px}
+.cn-label{font-size:9px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.cn-text{font-size:11px;color:var(--text2);line-height:1.6;margin:0}
+.brief-footer{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);background:var(--surface)}
+.brief-hint{font-size:11px;color:var(--text3)}
+.reset-btn{padding:5px 11px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text3);font-size:11px;font-family:'Instrument Sans',sans-serif;cursor:pointer;transition:all .18s;flex-shrink:0}
+.reset-btn:hover{color:var(--red);border-color:var(--red);background:#f8717110}
+
+/* SCREEN 2 */
+#screen-game{padding:0}
+.hearing-bar{padding:8px 18px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.era-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.era-tab{padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;font-size:11px;font-family:'Syne',sans-serif;color:var(--text2);font-weight:600;transition:all .18s}
+.era-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.era-tab.done{border-color:var(--green);color:var(--green)}
+.game-layout{display:grid;grid-template-columns:1fr 282px;gap:12px;padding:12px;max-width:1160px;margin:0 auto;align-items:start}
+.game-left{display:flex;flex-direction:column;gap:10px}
+.era-ctx{padding:9px 13px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--text2);line-height:1.55;border-left:3px solid var(--accent2)}
+.map-frame{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.map-frame-title{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-weight:600;align-self:flex-start}
+.map-inner{background:var(--surface2);border-radius:8px;padding:8px;width:100%;display:flex;align-items:center;justify-content:center}
+.map-legend{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:4px}
+.game-right{display:flex;flex-direction:column;gap:9px}
+.gcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px}
+.gcard-title{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;font-family:'Syne',sans-serif}
+.pip-row{display:flex;gap:5px;flex-wrap:wrap}
+.pip{width:9px;height:9px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .3s}
+.pip.ok{background:var(--green)}.pip.bad{background:var(--red)}.pip.cur{background:var(--accent)}
+.council-card{background:var(--surface);border:1px solid var(--border2);border-radius:12px;overflow:hidden}
+.cc-head{padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.cc-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.cc-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text)}
+.cc-role{font-size:10px;color:var(--text2)}
+.cc-theme{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:6px 13px 0}
+.cc-q{font-size:11px;color:var(--text);line-height:1.7;padding:8px 13px}
+.cc-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700}
+.choices{display:flex;flex-direction:column;gap:4px;padding:0 10px 10px}
+.choice-btn{padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:transparent;font-size:11px;font-family:'Instrument Sans',sans-serif;color:var(--text);text-align:left;transition:all .15s;line-height:1.45}
+.choice-btn:hover{background:var(--surface2);border-color:var(--accent)}
+.choice-btn.correct{background:#4ade8018;border-color:#4ade80;color:#86efac}
+.choice-btn.wrong{background:#f8717118;border-color:#f87171;color:#fca5a5}
+.choice-btn.reveal{background:#6c63ff18;border-color:#6c63ff;color:#a09aff}
+.verdict{font-size:11px;line-height:1.65;padding:9px 11px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);min-height:34px}
+.verdict.ok{background:#4ade8010;border-color:#4ade8040;color:#86efac}
+.verdict.bad{background:#f8717110;border-color:#f8717140;color:#fca5a5}
+.next-btn{width:100%;padding:8px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;display:none;transition:all .18s}
+.next-btn:hover{background:#7c73ff}
+.br-label{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+
+/* SCREEN 3 */
+#screen-sort{padding:0}
+.comm-wrap{max-width:660px;margin:0 auto;padding:24px 18px}
+.comm-wrap h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px;text-align:center}
+.comm-wrap .sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:16px;line-height:1.7}
+.directive{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;margin-bottom:16px;border-left:4px solid var(--gold)}
+.directive p{font-size:11px;color:var(--text2);line-height:1.7}
+.directive strong{color:var(--text)}
+.sort-tl{display:flex;gap:0;margin:14px 0 6px;position:relative}
+.sort-tl::before{content:'';position:absolute;top:18px;left:8%;right:8%;height:2px;background:var(--border);z-index:0}
+.tl-item{flex:1;text-align:center;position:relative;z-index:1}
+.tl-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);background:var(--surface);margin:0 auto 4px;transition:all .3s}
+.tl-dot.ok{background:var(--green);border-color:var(--green)}.tl-dot.bad{background:var(--red);border-color:var(--red)}
+.tl-lbl{font-size:9px;color:var(--text2);line-height:1.3}
+.sort-list{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.sort-item{background:var(--surface);border:2px solid var(--border);border-radius:11px;padding:10px 14px;cursor:grab;display:flex;align-items:center;gap:10px;transition:all .2s;user-select:none}
+.sort-item:active{cursor:grabbing}
+.sort-item.dragging{opacity:.35;border-style:dashed}
+.sort-item.drag-over{border-color:var(--accent);background:var(--surface2)}
+.sort-handle{color:var(--text3);font-size:15px;flex-shrink:0}
+.sort-num{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--border2);width:24px;text-align:center;flex-shrink:0}
+.sort-mini{width:58px;height:48px;flex-shrink:0;border-radius:7px;overflow:hidden;background:var(--surface2);display:flex;align-items:center;justify-content:center}
+.sort-info{flex:1}
+.sort-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.sort-clue{font-size:11px;color:var(--text2);margin-top:2px}
+.sort-result{border-radius:10px;padding:13px 16px;font-size:12px;line-height:1.75;display:none;margin-top:12px}
+.sort-result.correct{background:#4ade8010;border:1px solid #4ade8050;color:#86efac}
+.sort-result.wrong{background:#f8717110;border:1px solid #f8717150;color:#fca5a5}
+.sort-final{display:none;margin-top:16px;text-align:center}
+
+/* SCREEN 4 */
+#screen-report{padding:0}
+.report-wrap{max-width:740px;margin:0 auto;padding:20px 16px}
+.report-lh{text-align:center;padding:20px 0 18px;border-bottom:1px solid var(--border);margin-bottom:18px}
+.report-lh h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:3px}
+.report-lh p{font-size:12px;color:var(--text2)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--gold)}
+.stat-lbl{font-size:10px;color:var(--text2);margin-top:2px}
+.era-result{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:8px}
+.era-result-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px}
+.era-pips{display:flex;gap:4px;flex-wrap:wrap}
+.era-pip{width:11px;height:11px;border-radius:50%}
+.era-pip.ok{background:var(--green)}.era-pip.bad{background:var(--red)}.era-pip.skip{background:var(--border)}
+.director-note{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:10px;padding:13px 16px;margin:16px 0;font-size:12px;color:var(--text2);line-height:1.75}
+.director-note strong{color:var(--text);display:block;margin-bottom:3px}
+.report-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+
+@media print{
+  body{background:#fff;color:#111}
+  .no-print{display:none!important}
+  #screen-report{display:block!important;color:#111}
+  .report-wrap{color:#111}
+  .stat-box,.era-result,.director-note{border:1px solid #ccc;background:#f9f9f9}
+  .stat-num{color:#333}.stat-lbl,.era-result-name{color:#333}
+  .director-note{border-left-color:#6c63ff}
+  .era-pip.ok{background:#22c55e}.era-pip.bad{background:#ef4444}.era-pip.skip{background:#ccc}
+  .print-ticket{display:block!important}
+}
+.print-ticket{display:none}
+.ticket-box{border:2px solid #bbb;border-radius:8px;padding:16px;margin-top:16px;color:#111}
+.ticket-box h3{font-size:14px;font-weight:700;margin-bottom:10px;color:#111}
+.t-q{font-size:12px;margin-bottom:4px;color:#222}
+.t-line{border-bottom:1px solid #aaa;margin:4px 0 12px;height:20px}
+
+/* SCREEN 3.5 — DEVELOPMENT BRIEF */
+#screen-dev{padding:0}
+.dev-wrap{max-width:860px;margin:0 auto;padding:20px 18px}
+.dev-memo{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px}
+.dev-memo-top{background:linear-gradient(135deg,#1e2438,#2a3350);padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.dev-memo-stamp{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:4px;border:1.5px solid currentColor;flex-shrink:0}
+.dev-memo-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.dev-memo-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.dev-memo-body{padding:18px 20px}
+.dev-memo-body p{font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:10px}
+.dev-memo-body p:last-child{margin-bottom:0}
+.dev-memo-body strong{color:var(--text)}
+.dev-section{margin-bottom:20px}
+.dev-section-hd{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.dev-section-hd .badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid;letter-spacing:.05em;text-transform:uppercase}
+/* density drag zone */
+.density-arena{display:grid;grid-template-columns:200px 1fr;gap:14px;align-items:start}
+.density-palette{display:flex;flex-direction:column;gap:6px}
+.density-chip{padding:8px 12px;border-radius:8px;border:2px solid;font-size:11px;font-weight:600;font-family:'Syne',sans-serif;cursor:grab;user-select:none;transition:all .18s;text-align:center}
+.density-chip:active{cursor:grabbing;transform:scale(.97)}
+.density-chip.used{opacity:.3;cursor:not-allowed}
+.density-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.density-zone{border:2px dashed var(--border2);border-radius:10px;padding:10px;min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:border-color .2s;position:relative}
+.density-zone.drag-over{border-color:var(--accent);background:var(--surface2)}
+.density-zone.filled{border-style:solid}
+.density-zone.correct{border-color:var(--green);background:#4ade8012}
+.density-zone.incorrect{border-color:var(--red);background:#f8717112}
+.dz-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;font-weight:600;text-align:center}
+.dz-placed{font-size:11px;font-weight:700;font-family:'Syne',sans-serif;text-align:center;padding:5px 8px;border-radius:6px}
+.dz-icon{font-size:22px;line-height:1}
+.dz-desc{font-size:10px;color:var(--text3);text-align:center;line-height:1.4}
+.dz-remove{position:absolute;top:5px;right:7px;font-size:11px;color:var(--text3);cursor:pointer;background:none;border:none;padding:0}
+.dz-remove:hover{color:var(--red)}
+.density-verdict{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.65;display:none;background:var(--surface2);border:1px solid var(--border)}
+.density-verdict.ok{background:#4ade8010;border-color:#4ade8040;color:#86efac}
+.density-verdict.bad{background:#f8717110;border-color:#f8717140;color:#fca5a5}
+/* infrastructure scenario */
+.infra-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.infra-option{border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .2s;background:var(--surface)}
+.infra-option:hover{border-color:var(--accent2);background:var(--surface2)}
+.infra-option.selected{border-color:var(--accent);background:#6c63ff14}
+.infra-option.selected .infra-icon{background:var(--accent)}
+.io-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.infra-icon{width:38px;height:38px;border-radius:8px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .2s}
+.io-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.io-type{font-size:10px;color:var(--text2)}
+.io-pros{font-size:11px;color:var(--text2);line-height:1.65}
+.io-pros span{display:block;margin-bottom:3px}
+.io-pros span::before{content:"+ ";color:var(--green);font-weight:700}
+.io-cons span::before{content:"− ";color:var(--red);font-weight:700}
+.io-cons{font-size:11px;color:var(--text2);line-height:1.65;margin-top:6px}
+.infra-qblock{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px}
+.infra-qblock p{font-size:12px;color:var(--text);line-height:1.7;margin-bottom:10px}
+.infra-choices{display:flex;flex-direction:column;gap:5px}
+.infra-verdict{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.65;display:none;background:var(--surface2);border:1px solid var(--border)}
+.infra-verdict.ok{background:#4ade8010;border-color:#4ade8040;color:#86efac}
+.infra-verdict.bad{background:#f8717110;border-color:#f8717140;color:#fca5a5}
+.dev-progress{display:flex;gap:10px;align-items:center;margin-bottom:18px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.dev-step{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)}
+.dev-step .step-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'Syne',sans-serif;color:var(--text2);flex-shrink:0}
+.dev-step.active .step-dot{border-color:var(--accent);background:var(--accent);color:#fff}
+.dev-step.done .step-dot{border-color:var(--green);background:var(--green);color:#fff}
+.dev-step.active{color:var(--text)}
+.dev-divider{border:none;border-top:1px solid var(--border);margin:20px 0}
+</style>
+</head>
+<body>
+
+<!-- SCREEN 0: HIRE LETTER -->
+<div id="screen-hire" class="screen active">
+<div class="letter-wrap">
+  <div class="letterhead">
+    <div class="lh-top">
+      <div class="lh-seal">M</div>
+      <div class="lh-org"><h2>City of Maplewood</h2><p>Department of Urban Planning &amp; Development</p></div>
+    </div>
+    <div class="lh-body">
+      <div class="lh-date">Memorandum &middot; Urban Planning Commission &middot; For Internal Use</div>
+      <p>Congratulations on your appointment as <strong>Junior Urban Planner</strong> for the City of Maplewood. You join the department at a critical moment in our city&rsquo;s history.</p>
+      <p>The City Council has commissioned a comprehensive review of how Maplewood has grown and changed across four distinct eras of its development. Each era reflects a different model of urban form &mdash; shaped by the transportation technology, economic conditions, and land-use forces of its time.</p>
+      <p><strong>Your responsibilities are as follows:</strong></p>
+      <p><strong>1. Review the case files</strong> for each era of Maplewood&rsquo;s history. Pay close attention to how bid-rent theory, transportation infrastructure, and economic activity explain the city&rsquo;s spatial structure in each period.</p>
+      <p><strong>2. Appear before the City Council</strong> for a planning hearing on each era. Council members will challenge you to explain and justify why specific zones are located where they are. Your credibility depends on the quality of your responses.</p>
+      <p><strong>3. Present to the Planning Commission</strong> a correctly sequenced master plan timeline showing how Maplewood evolved from its earliest urban form to its present-day structure.</p>
+      <p>The Council convenes shortly. Study your case files carefully.</p>
+      <div class="lh-sign">
+        <div class="sig">Director H. Vasquez</div>
+        <p>Director, Maplewood Department of Urban Planning</p>
+        <p style="margin-top:3px;font-size:10px;color:var(--text3)">City of Maplewood &middot; Planning Commission &middot; Confidential</p>
+      </div>
+    </div>
+    <div class="lh-cta">
+      <div id="resume-banner" style="display:none;margin-bottom:12px;padding:10px 14px;background:#6c63ff18;border:1px solid #6c63ff55;border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6">
+        <span style="font-weight:700;color:var(--accent)">Progress saved.</span> You left off mid-activity. Resume where you stopped, or start fresh.
+        <div style="display:flex;gap:8px;margin-top:8px;justify-content:center">
+          <button class="btn-primary" style="padding:7px 18px;font-size:12px" onclick="resumeActivity()">Resume &rarr;</button>
+          <button class="btn-secondary" style="padding:7px 14px;font-size:12px" onclick="clearSave();document.getElementById('resume-banner').style.display='none'">Start fresh</button>
+        </div>
+      </div>
+      <button class="btn-gold" id="start-btn" onclick="showScreen('screen-brief');buildBriefings()">Review Case Files &rarr;</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SCREEN 1: BRIEFINGS -->
+<div id="screen-brief" class="screen">
+  <div class="city-header">
+    <div class="city-seal">M</div>
+    <div class="city-title"><h1>Maplewood Planning Department &mdash; Era Case Files</h1><p>Study each era before the Council Hearing</p></div>
+    <button class="reset-btn" onclick="if(confirm('Reset all progress and start over?')){clearSave();location.reload();}">&#8635; Reset</button>
+  </div>
+  <div class="brief-nav" id="brief-nav"></div>
+  <div class="brief-body" id="brief-body"></div>
+  <div class="brief-footer">
+    <span class="brief-hint" id="brief-hint">Review all four eras to unlock the Council Hearing.</span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn-secondary" id="b-prev" onclick="briefNav(-1)" style="display:none">&larr; Previous</button>
+      <button class="btn-secondary" id="b-next" onclick="briefNav(1)">Next era &rarr;</button>
+      <button class="btn-primary" id="b-start" onclick="showScreen('screen-game');initGame()" style="display:none">Proceed to Council Hearing &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2: COUNCIL HEARING -->
+<div id="screen-game" class="screen">
+  <div class="city-header">
+    <div class="city-seal">M</div>
+    <div class="city-title"><h1>Maplewood City Council &mdash; Planning Hearing</h1><p>Defend your planning decisions under council scrutiny</p></div>
+    <div class="cred-bar"><span class="cred-label">Credibility</span><span class="cred-val" id="cred-score">0</span></div>
+    <button class="reset-btn" onclick="if(confirm('Reset all progress and start over?')){clearSave();location.reload();}">&#8635; Reset</button>
+  </div>
+  <div class="hearing-bar"><div class="era-tabs" id="era-tabs"></div></div>
+  <div class="game-layout">
+    <div class="game-left">
+      <div class="era-ctx" id="era-ctx"></div>
+      <div class="map-frame">
+        <div class="map-frame-title" id="map-title">Maplewood &mdash; Era map</div>
+        <div class="map-inner" id="map-wrap"></div>
+        <div class="map-legend" id="map-legend"></div>
+      </div>
+    </div>
+    <div class="game-right">
+      <div class="gcard"><div class="gcard-title">Hearing progress</div><div class="pip-row" id="pip-row"></div></div>
+      <div class="council-card">
+        <div class="cc-head">
+          <div class="cc-avatar" id="cc-av" style="background:var(--accent)">?</div>
+          <div><div class="cc-name" id="cc-name">Awaiting challenge&hellip;</div><div class="cc-role" id="cc-role"></div></div>
+        </div>
+        <div class="cc-theme" id="cc-theme"></div>
+        <div class="cc-q" id="cc-q">Click any zone on the map to receive a council challenge.</div>
+        <div class="choices" id="choices"></div>
+      </div>
+      <div class="verdict" id="verdict">Select a zone on the map to begin the hearing.</div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">Next challenge &rarr;</button>
+      <div class="gcard"><div class="br-label">Bid-rent theory</div><canvas id="bid-canvas" width="256" height="106" style="width:100%;display:block"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: COMMISSION SORT -->
+<div id="screen-sort" class="screen">
+  <div class="city-header">
+    <div class="city-seal">M</div>
+    <div class="city-title"><h1>Maplewood Planning Commission &mdash; Master Plan Vote</h1><p>Sequence Maplewood&rsquo;s eras to pass the master plan</p></div>
+    <div class="cred-bar"><span class="cred-label">Credibility</span><span class="cred-val" id="sort-cred">0</span></div>
+    <button class="reset-btn" onclick="if(confirm('Reset all progress and start over?')){clearSave();location.reload();}">&#8635; Reset</button>
+  </div>
+  <div class="comm-wrap">
+    <h2>The Master Plan Presentation</h2>
+    <p class="sub">The Planning Commission requires a chronological account of Maplewood&rsquo;s development. Drag the four eras into the correct order &mdash; oldest to most recent &mdash; to pass the Master Plan.</p>
+    <div class="directive"><p><strong>Commission directive:</strong> Think about what transportation technology existed in each era and how that shaped the city&rsquo;s form. A planner who cannot sequence their own city&rsquo;s history will not earn the Commission&rsquo;s confidence.</p></div>
+    <div class="sort-tl" id="sort-tl"></div>
+    <div class="sort-list" id="sort-list"></div>
+    <button class="btn-gold" style="width:100%;padding:11px;font-size:14px" id="sort-submit" onclick="checkSort()">Submit Master Plan &rarr;</button>
+    <div class="sort-result" id="sort-result"></div>
+    <div class="sort-final" id="sort-final">
+      <button class="btn-primary" onclick="showScreen('screen-dev');updateDevCred()">Proceed to Development Brief &rarr;</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- SCREEN 3.5: DEVELOPMENT BRIEF -->
+<div id="screen-dev" class="screen">
+  <div class="city-header">
+    <div class="city-seal">M</div>
+    <div class="city-title"><h1>Maplewood Planning Department &mdash; Development Brief</h1><p>Learning Targets 6.6 &amp; 6.7 &mdash; Density &amp; Land Use &middot; Infrastructure</p></div>
+    <div class="cred-bar"><span class="cred-label">Credibility</span><span class="cred-val" id="dev-cred">0</span></div>
+    <button class="reset-btn" onclick="if(confirm('Reset all progress and start over?')){clearSave();location.reload();}">&#8635; Reset</button>
+  </div>
+  <div class="dev-wrap">
+
+    <!-- intro memo -->
+    <div class="dev-memo">
+      <div class="dev-memo-top">
+        <span class="dev-memo-stamp" style="color:#4fd1c5;border-color:#4fd1c5">Development Brief</span>
+        <div><div class="dev-memo-title">Director&rsquo;s Memo &mdash; Next Steps for Maplewood</div><div class="dev-memo-sub">Maplewood Planning Department &middot; For immediate action</div></div>
+      </div>
+      <div class="dev-memo-body">
+        <p>You have demonstrated a strong command of Maplewood&rsquo;s historical development. Now the real work begins. The city faces two pressing planning decisions that require your expertise before you file your final report.</p>
+        <p><strong>Part 1 &mdash; Density &amp; Land Use (6.6):</strong> A vacant parcel on the edge of Maplewood&rsquo;s downtown has been cleared for redevelopment. You must advise the Council on how to zone three distinct sub-districts based on density and land use principles.</p>
+        <p><strong>Part 2 &mdash; Infrastructure (6.7):</strong> The city must choose between two major infrastructure investments. Each option will reshape Maplewood&rsquo;s spatial patterns of economic and social development. The Council needs your analysis.</p>
+      </div>
+    </div>
+
+    <!-- step tracker -->
+    <div class="dev-progress">
+      <div class="dev-step active" id="dstep-1"><div class="step-dot">1</div>Density &amp; Land Use</div>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <div class="dev-step" id="dstep-2"><div class="step-dot">2</div>Infrastructure</div>
+      <div style="flex:1;height:1px;background:var(--border)"></div>
+      <div class="dev-step" id="dstep-3"><div class="step-dot">3</div>Final Report</div>
+    </div>
+
+    <!-- PART 1: DENSITY -->
+    <div id="dev-part1">
+      <div class="dev-section">
+        <div class="dev-section-hd">
+          <span class="badge" style="color:#4fd1c5;border-color:#4fd1c555;background:#4fd1c510">Topic 6.6</span>
+          Part 1 &mdash; Density &amp; Land Use
+        </div>
+        <div class="dev-memo" style="margin-bottom:12px">
+          <div class="dev-memo-body" style="padding:14px 18px">
+            <p>The Maplewood Redevelopment Authority has cleared three adjacent sub-districts near downtown for new construction. Your task: assign the correct housing density type to each sub-district based on its location, infrastructure access, and land cost. Drag each density type from the palette onto its matching sub-district.</p>
+            <p><strong>Density types:</strong> <strong>High-density</strong> housing (apartments, high-rises) requires the most infrastructure per block but houses the most people &mdash; it is economically viable only where land costs are highest and transit access is strong. <strong>Medium-density</strong> housing (townhomes, small apartment buildings) balances land cost and population. <strong>Low-density</strong> housing (single-family homes, large lots) requires the most land per resident and is only financially viable where land is cheap and car access is assumed.</p>
+          </div>
+        </div>
+
+        <div class="density-arena">
+          <div>
+            <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:8px">Density types &mdash; drag to zone</div>
+            <div class="density-palette" id="density-palette">
+              <div class="density-chip" id="chip-high" draggable="true" data-density="high" style="border-color:#6c63ff;color:#a09aff;background:#6c63ff14" ondragstart="chipDragStart(event,'high')">
+                &#x1F3E2; High-density<div style="font-size:10px;font-weight:400;margin-top:2px;opacity:.7">Apartments / high-rises</div>
+              </div>
+              <div class="density-chip" id="chip-med" draggable="true" data-density="med" style="border-color:#4fd1c5;color:#4fd1c5;background:#4fd1c510" ondragstart="chipDragStart(event,'med')">
+                &#x1F3D8; Medium-density<div style="font-size:10px;font-weight:400;margin-top:2px;opacity:.7">Townhomes / small apt. bldgs</div>
+              </div>
+              <div class="density-chip" id="chip-low" draggable="true" data-density="low" style="border-color:#4ade80;color:#4ade80;background:#4ade8010" ondragstart="chipDragStart(event,'low')">
+                &#x1F3E1; Low-density<div style="font-size:10px;font-weight:400;margin-top:2px;opacity:.7">Single-family / large lots</div>
+              </div>
+            </div>
+            <div style="margin-top:14px;padding:10px 12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+              <div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Zoning clues</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.7">
+                Consider: land cost, transit access, proximity to CBD, infrastructure demand, and who can afford to live there.
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:8px">Maplewood redevelopment sub-districts</div>
+            <div class="density-map">
+              <div class="density-zone" id="dzone-cbd" data-correct="high"
+                ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dzone-cbd')">
+                <div class="dz-icon">&#x1F3D9;</div>
+                <div class="dz-label">Sub-district A<br>Adjacent to downtown CBD<br><span style="color:var(--text3);font-size:9px">High land cost &middot; strong transit &middot; dense existing fabric</span></div>
+              </div>
+              <div class="density-zone" id="dzone-mid" data-correct="med"
+                ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dzone-mid')">
+                <div class="dz-icon">&#x1F306;</div>
+                <div class="dz-label">Sub-district B<br>Inner-ring transition area<br><span style="color:var(--text3);font-size:9px">Moderate land cost &middot; bus access &middot; mixed use nearby</span></div>
+              </div>
+              <div class="density-zone" id="dzone-fringe" data-correct="low"
+                ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'dzone-fringe')">
+                <div class="dz-icon">&#x1F33F;</div>
+                <div class="dz-label">Sub-district C<br>Suburban fringe parcel<br><span style="color:var(--text3);font-size:9px">Low land cost &middot; car-dependent &middot; near highway on-ramp</span></div>
+              </div>
+            </div>
+            <div class="density-verdict" id="density-verdict"></div>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn-primary" id="density-check-btn" onclick="checkDensity()" style="display:none">Check Zoning Plan &rarr;</button>
+              <button class="btn-secondary" id="density-reset-btn" onclick="resetDensity()" style="display:none">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6.6 follow-up questions (revealed after density check) -->
+        <div id="density-qs" style="display:none;margin-top:18px">
+          <hr class="dev-divider">
+          <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:12px">Council follow-up &mdash; Density &amp; Land Use</div>
+          <div id="dq-container"></div>
+          <button class="btn-primary" id="density-advance-btn" onclick="advanceToPart2()" style="display:none;margin-top:12px">Proceed to Infrastructure Decision &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PART 2: INFRASTRUCTURE -->
+    <div id="dev-part2" style="display:none">
+      <hr class="dev-divider">
+      <div class="dev-section">
+        <div class="dev-section-hd">
+          <span class="badge" style="color:#fb923c;border-color:#fb923c55;background:#fb923c10">Topic 6.7</span>
+          Part 2 &mdash; Infrastructure Decision
+        </div>
+        <div class="dev-memo" style="margin-bottom:14px">
+          <div class="dev-memo-body" style="padding:14px 18px">
+            <p>Maplewood has secured funding for one major infrastructure investment. The Council is divided. Your job is to analyze both options and advise the city on which investment will best shape equitable and sustainable spatial development.</p>
+          </div>
+        </div>
+
+        <div class="infra-cards">
+          <div class="infra-option" id="infra-opt-rail" onclick="selectInfra('rail')">
+            <div class="io-top">
+              <div class="infra-icon">&#x1F686;</div>
+              <div><div class="io-name">Light-Rail Line</div><div class="io-type">Downtown &rarr; inner-ring neighborhoods</div></div>
+            </div>
+            <div class="io-pros">
+              <span>Connects low- and middle-income neighborhoods to the CBD</span>
+              <span>Reduces car dependency; supports transit-oriented development</span>
+              <span>Increases density and infill near stations</span>
+            </div>
+            <div class="io-cons">
+              <span>High upfront construction cost; fixed route</span>
+              <span>Only serves inner city; does not reach suburban fringe</span>
+            </div>
+          </div>
+          <div class="infra-option" id="infra-opt-highway" onclick="selectInfra('highway')">
+            <div class="io-top">
+              <div class="infra-icon">&#x1F6E3;</div>
+              <div><div class="io-name">Highway Interchange</div><div class="io-type">Beltway &rarr; suburban fringe</div></div>
+            </div>
+            <div class="io-pros">
+              <span>Unlocks suburban fringe land for development</span>
+              <span>Attracts edge city employment nodes and retail</span>
+              <span>Reduces CBD congestion by distributing traffic</span>
+            </div>
+            <div class="io-cons">
+              <span>Encourages low-density sprawl; increases car dependency</span>
+              <span>Benefits higher-income car-owning residents disproportionately</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="infra-qs-wrap" style="display:none">
+          <div id="iq-container"></div>
+          <button class="btn-gold" id="dev-finish-btn" onclick="showScreen('screen-report');buildReport()" style="display:none;margin-top:14px;width:100%;padding:11px;font-size:14px">View Final Planning Report &rarr;</button>
+        </div>
+        <div id="infra-select-hint" style="font-size:11px;color:var(--text3);margin-top:8px;text-align:center">Select an infrastructure option above to continue.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SCREEN 4: REPORT -->
+<div id="screen-report" class="screen">
+  <div class="city-header no-print">
+    <div class="city-seal">M</div>
+    <div class="city-title"><h1>Maplewood &mdash; Junior Planner Performance Report</h1><p>Urban models &amp; bid-rent theory assessment</p></div>
+  </div>
+  <div class="report-wrap" id="report-wrap"></div>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+function svgEl(tag,a){const e=document.createElementNS(NS,tag);for(const[k,v] of Object.entries(a))e.setAttribute(k,v);return e;}
+function mkSvg(w,h){const s=document.createElementNS(NS,"svg");s.setAttribute("viewBox","0 0 "+w+" "+h);s.setAttribute("width","100%");return s;}
+function svgT(str,x,y,sz,wt,anc,col){const tx=document.createElementNS(NS,"text");Object.entries({x,y,"font-size":sz,"font-weight":wt||"400","text-anchor":anc||"middle","dominant-baseline":"middle",fill:col||"#222","pointer-events":"none"}).forEach(([k,v])=>tx.setAttribute(k,v));tx.textContent=str;return tx;}
+function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");saveState();}
+// ══════════════════════════════════════════
+// SAVE / RESTORE
+// ══════════════════════════════════════════
+const SAVE_KEY="maplewood_progress";
+
+function saveState(){
+  try{
+    const screen=document.querySelector(".screen.active")?.id||"screen-hire";
+    const state={
+      screen,
+      totalCred,
+      bSeen:[...bSeen],
+      bIdx,
+      curEra,
+      allRes,
+      // encode qPool+results so we can restore mid-era
+      qPoolKeys:qPool.map(q=>q.zoneId+"|"+q.qIdx),
+      qIdx,
+      results:[...results],
+      answered,
+      sortOrder:[...sortOrder],
+      sortDone:document.getElementById("sort-final")?.style.display==="block",
+      dzState,
+      infraSelected,
+      dqAnswered:[...dqAnswered],
+      infraQsDone:[...infraQsDone],
+      devPart2Open:document.getElementById("dev-part2")?.style.display!=="none",
+    };
+    localStorage.setItem(SAVE_KEY,JSON.stringify(state));
+  }catch(e){}
+}
+
+function hasSave(){
+  try{const s=localStorage.getItem(SAVE_KEY);return s&&JSON.parse(s).screen!=="screen-hire";}catch(e){return false;}
+}
+
+function clearSave(){
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+}
+
+function loadState(){
+  try{return JSON.parse(localStorage.getItem(SAVE_KEY)||"null");}catch(e){return null;}
+}
+
+function resumeActivity(){
+  const st=loadState();if(!st)return;
+  totalCred=st.totalCred||0;
+  bSeen=new Set(st.bSeen||[]);
+  bIdx=st.bIdx||0;
+  allRes=st.allRes||{};
+  sortOrder=st.sortOrder&&st.sortOrder.length===4?st.sortOrder:[...SORT_CORRECT].sort(()=>Math.random()-.5);
+
+  const screen=st.screen||"screen-brief";
+
+  if(screen==="screen-brief"){
+    showScreen("screen-brief");buildBriefings();
+
+  } else if(screen==="screen-game"){
+    // restore game state
+    curEra=st.curEra||"concentric";
+    buildPool();// builds fresh pool — then we re-order to match saved
+    if(st.qPoolKeys&&st.qPoolKeys.length===qPool.length){
+      // remap saved pool order
+      const lookup={};
+      qPool.forEach((q,i)=>lookup[q.zoneId+"|"+q.qIdx]=q);
+      const reordered=st.qPoolKeys.map(k=>lookup[k]).filter(Boolean);
+      if(reordered.length===qPool.length)qPool=reordered;
+    }
+    results=st.results&&st.results.length===qPool.length?[...st.results]:new Array(qPool.length).fill(null);
+    qIdx=st.qIdx||0;
+    answered=st.answered||false;
+    showScreen("screen-game");
+    renderEtabs();renderMap2();renderCtx();renderChallenge();renderPips();drawBidRent2();
+    document.getElementById("verdict").textContent="Choose the best planning justification.";
+    document.getElementById("verdict").className="verdict";
+    if(answered)document.getElementById("next-btn").style.display="block";
+
+  } else if(screen==="screen-sort"){
+    showScreen("screen-sort");buildSort();
+    if(st.sortDone){checkSort();}
+
+  } else if(screen==="screen-dev"){
+    showScreen("screen-dev");updateDevCred();
+    dzState=st.dzState||{};
+    // restore density placements
+    Object.entries(dzState).forEach(([zoneId,density])=>{
+      renderDzZone(zoneId,density);markChipUsed(density,true);
+    });
+    if(Object.keys(dzState).length===3){
+      document.getElementById("density-check-btn").style.display="inline-block";
+      document.getElementById("density-reset-btn").style.display="inline-block";
+    }
+    dqAnswered=st.dqAnswered&&st.dqAnswered.length?[...st.dqAnswered]:[];
+    infraQsDone=st.infraQsDone&&st.infraQsDone.length?[...st.infraQsDone]:[];
+    infraSelected=st.infraSelected||null;
+    if(dqAnswered.length&&dqAnswered.every(Boolean)){
+      buildDensityQs();
+      if(st.devPart2Open)advanceToPart2();
+    }
+    if(infraSelected){selectInfra(infraSelected);}
+
+  } else if(screen==="screen-report"){
+    showScreen("screen-report");buildReport();
+
+  } else {
+    showScreen("screen-brief");buildBriefings();
+  }
+}
+
+// Check for saved progress on load
+window.addEventListener("DOMContentLoaded",()=>{
+  if(hasSave()){
+    document.getElementById("resume-banner").style.display="block";
+  }
+});
+
+
+
+const THL={housing:"Housing Location",transport:"Transportation",economic:"Economic Activity",suburban:"Suburbanization"};
+const THC={housing:"#4ade80",transport:"#4fd1c5",economic:"#f6c90e",suburban:"#fb923c"};
+const CM=[
+  {name:"Councilmember Rivera",role:"Chair, Land Use Committee",bg:"#6c63ff",init:"LR"},
+  {name:"Councilmember Chen",role:"Transportation & Infrastructure",bg:"#4fd1c5",init:"AC"},
+  {name:"Councilmember Okafor",role:"Housing & Community Development",bg:"#fb923c",init:"NO"},
+  {name:"Councilmember Patel",role:"Economic Development",bg:"#f6c90e",init:"SP"},
+  {name:"Councilmember Torres",role:"Environmental Planning",bg:"#4ade80",init:"MT"},
+];
+
+const ERAS=[
+{key:"concentric",name:"Concentric Zone Era",model:"Concentric Zone Model",year:"1890s\u20131920s",src:"Burgess, 1925",stamp:"#4fd1c5",
+ ctx:"Maplewood in its transit era \u2014 the CBD anchors the city center and rings of land use radiate outward. Distance from the CBD equals distance from economic opportunity.",
+ summary:"Maplewood\u2019s earliest urban form is organized into five concentric rings. The CBD dominates the center. Rings of industrial, working-class, middle-class, and upper-class residential use radiate outward. Land rent is highest at the center and falls with distance. Secondary-sector factory workers live in ring 3, close to the factories in ring 2. The only way to escape industrial nuisance is to pay for a longer commute \u2014 a luxury only higher incomes can afford.",
+ detail:"This era reflects transit-dependent growth. Without cars, distance is real cost. Workers literally could not afford to live far from their jobs. The bid-rent curves of commerce, industry, and residential land uses create distinct rings \u2014 each land use wins the location where it can outbid all others.",
+ bidrent:"CBD land commands peak rents. Each ring outward means lower rents, larger lots, and higher household incomes. Secondary-sector factory workers cluster in ring 3; tertiary-sector office workers cluster near the CBD. The outermost ring belongs to those who can afford the longest commute.",
+ council:"The Council wants you to explain how transportation, housing location, economic activity, and early suburbanization each shaped Maplewood\u2019s concentric ring structure.",
+ themes:["economic","housing","transport","suburban"],
+ legends:[{fill:"#FFD700",stroke:"#b8960a",label:"CBD"},{fill:"#E8A0A0",stroke:"#a05050",label:"Transition zone"},{fill:"#90C060",stroke:"#5a8030",label:"Working-class residential"},{fill:"#70B0E0",stroke:"#3070a0",label:"Middle-class residential"},{fill:"#B090D0",stroke:"#7050a0",label:"Commuter / upper-class"}],
+ zones:[
+  {id:"c-cbd",fill:"#FFD700",stroke:"#b8960a",name:"CBD",qs:[
+   {cm:3,th:"economic",q:"Councilmember Patel asks: Where does economic activity concentrate in Maplewood\u2019s earliest era \u2014 and what explains why commerce outcompetes every other land use for that location?",choices:["Commercial uses pay the highest rents at the point of maximum accessibility, claiming the center","Industry outbids commercial uses at the center because factories need the most central locations","Economic activity scatters randomly across all rings with no relationship to distance from center","Residential uses claim the center first, pushing commerce outward toward the suburban fringe"],correct:0,exp:"Bid-rent theory: commercial uses generate enough revenue per square foot to outbid every other land use at the most accessible point \u2014 the geographic center. Economic activity concentrates at the CBD because that is where accessibility is highest and competition for land is most intense."}
+  ]},
+  {id:"c-wc",fill:"#90C060",stroke:"#5a8030",name:"Working-class residential",qs:[
+   {cm:2,th:"housing",q:"Councilmember Okafor asks: Why do Maplewood\u2019s factory workers live in ring 3, directly adjacent to the industrial zone, rather than in the outer rings where land is cheaper and lots are larger?",choices:["Without cars, workers must live within walking or short transit distance of their factory jobs","Working-class residents actively prefer living next to industry for the community it creates","Government housing programs legally assigned low-income workers to the ring adjacent to factories","Factory owners required their workers to live close by as a condition of employment"],correct:0,exp:"Housing location in the transit era is determined by commute cost. Without cars, distance = real money. Low-wage factory workers cannot afford a long transit ride every day, so they cluster in ring 3 \u2014 close enough to walk. Income determines how far from the center a household can afford to live."}
+  ]},
+  {id:"c-mc",fill:"#70B0E0",stroke:"#3070a0",name:"Middle-class residential",qs:[
+   {cm:1,th:"transport",q:"Councilmember Chen asks: In Maplewood\u2019s transit era, what role does the streetcar play in determining where different income groups live \u2014 and why can\u2019t low-wage workers use it the same way middle-class residents do?",choices:["Streetcar access lets middle-class residents trade a longer commute for cheaper land farther out \u2014 a trade-off low wages can\u2019t support","The streetcar only runs through the CBD and does not serve residential neighborhoods at all","All income groups ride the streetcar equally, so housing location is determined solely by personal preference","The streetcar increases density evenly across all rings, eliminating any income-based sorting pattern"],correct:0,exp:"Transportation infrastructure shapes who can live where. The streetcar extends the practical commute range \u2014 but only for those who can afford the fare and the time. Middle-class households use that access to move outward to larger, cheaper lots. Low-wage workers cannot absorb that cost, so they stay close in. Transportation doesn\u2019t just move people \u2014 it sorts them spatially by income."}
+  ]},
+  {id:"c-uc",fill:"#B090D0",stroke:"#7050a0",name:"Commuter / upper-class zone",qs:[
+   {cm:0,th:"suburban",q:"Councilmember Rivera asks: The wealthiest residents of Maplewood live in the outermost ring, farthest from the CBD. What does this early pattern reveal about the relationship between income and suburbanization?",choices:["High income = ability to absorb commute cost = ability to suburbanize. Wealth buys distance from the city center","Wealthy residents move outward because the CBD is too expensive for residential use and forces everyone out","The outer ring is cheapest, so wealthy residents move there to minimize their housing costs","Upper-class residents relocate outward only after government programs clear the inner rings of industry"],correct:0,exp:"The commuter zone is the earliest form of suburbanization: wealth enables households to trade commute cost for space, larger lots, and distance from industrial pollution. The farther out you live, the more you pay in transportation \u2014 and only higher incomes can absorb that. Suburbanization begins not with highways, but with the economic ability to buy distance."}
+  ]},
+ ]
+},
+{key:"sector",name:"Sector Model Era",model:"Sector Model",year:"1920s\u20131940s",src:"Hoyt, 1939",stamp:"#fb923c",
+ ctx:"Rail lines and river corridors have reshaped Maplewood into wedge-shaped sectors. Industry follows the cheapest transport corridor; high-income housing migrates along the most desirable route.",
+ summary:"As rail lines and streetcar routes extended outward from Maplewood\u2019s CBD, growth stopped being uniform. Industry followed the cheapest transport corridor, and high-income housing migrated along the most desirable route. Each income group fills an adjacent sector. The city\u2019s shape is now a pie \u2014 not a set of rings.",
+ detail:"The sector model\u2019s critical insight: transportation corridors lock in land use patterns. Once industry claims a rail corridor, adjacent land is devalued by noise and pollution \u2014 working-class housing follows. High-income households claim the cleanest, fastest corridor. Income sorting still operates through bid-rent logic, but now it is directional rather than concentric.",
+ bidrent:"Bid-rent peaks at the CBD, but transport corridors create directional rent gradients outward. Industry claims the lowest-cost transport corridor. High-income housing claims the highest-amenity corridor. Working-class housing fills the sector adjacent to industry.",
+ council:"The Council wants you to explain how transportation corridors, housing location, economic activity, and early suburbanization along specific routes shaped Maplewood\u2019s wedge-sector structure.",
+ themes:["transport","housing","economic","suburban"],
+ legends:[{fill:"#FFD700",stroke:"#b8960a",label:"CBD"},{fill:"#C0C0C0",stroke:"#707070",label:"Industrial sector"},{fill:"#90C060",stroke:"#5a8030",label:"Working-class residential"},{fill:"#70B0E0",stroke:"#3070a0",label:"Middle-class residential"},{fill:"#B090D0",stroke:"#7050a0",label:"High-income residential"}],
+ zones:[
+  {id:"s-ind",fill:"#C0C0C0",stroke:"#707070",name:"Industrial sector",qs:[
+   {cm:1,th:"transport",q:"Councilmember Chen asks: Maplewood stopped growing in rings and started growing in wedges. What role does transportation infrastructure play in creating this directional pattern \u2014 and why does industry always follow the same type of corridor?",choices:["Rail lines and rivers are the cheapest routes for moving heavy goods, so industry follows those corridors outward in linear wedges","Transportation has no effect on industrial location \u2014 factories choose sites randomly across all sectors","Industry forms wedges only because city planners zone rail corridors exclusively for manufacturing","All land uses follow rail lines equally, creating uniform wedge-shaped growth in every sector"],correct:0,exp:"Transportation infrastructure doesn\u2019t just connect places \u2014 it determines what gets built along it. Rail lines and rivers minimize freight costs for heavy industry, locking in industrial land use along those corridors. Once industry claims a route, adjacent land is devalued by noise and pollution, reinforcing the wedge. Transportation is the skeleton that gives the sector model its shape."}
+  ]},
+  {id:"s-wc",fill:"#90C060",stroke:"#5a8030",name:"Working-class residential",qs:[
+   {cm:2,th:"housing",q:"Councilmember Okafor asks: In Maplewood\u2019s sector era, working-class housing forms a wedge directly next to the industrial sector. What determines this housing location \u2014 and what does it tell us about who has choices and who doesn\u2019t?",choices:["Low-wage workers must minimize commute cost by living adjacent to their factory jobs \u2014 they cannot afford to live in a better sector","Working-class residents chose the industrial sector deliberately because of affordable rents and strong neighborhood identity","City planners assigned working-class residents to the sector adjacent to industry to keep the city organized","Working-class housing ends up next to industry randomly, with no economic or geographic logic explaining the pattern"],correct:0,exp:"Housing location reflects economic power. Low-wage secondary-sector workers cannot afford to live far from their jobs or in a sector with higher land values. They end up adjacent to industry not by choice but by economic necessity \u2014 the same logic as the concentric model, now applied directionally. The sector you live in reveals your income."}
+  ]},
+  {id:"s-cbd",fill:"#FFD700",stroke:"#b8960a",name:"CBD",qs:[
+   {cm:3,th:"economic",q:"Councilmember Patel asks: Even though Maplewood now grows in wedges, the CBD remains at the center. Where does economic activity concentrate in this era \u2014 and has the CBD\u2019s role changed from the concentric era?",choices:["The CBD still anchors all sectors as the peak of economic activity \u2014 every wedge radiates outward from it","The CBD has shifted outward along the most active transportation corridor, leaving the center empty","Economic activity has fully decentralized into each sector\u2019s own commercial strip, making the CBD irrelevant","The CBD has expanded to absorb the industrial sector, merging commerce and manufacturing at the center"],correct:0,exp:"Economic activity still peaks at the CBD \u2014 maximum accessibility means maximum commercial rent, regardless of whether growth is concentric or sectoral. What has changed is the direction of growth outward from that center. The CBD is the hub; sectors are the spokes. Commerce holds the center while industry, housing, and services radiate along corridors."}
+  ]},
+  {id:"s-uc",fill:"#B090D0",stroke:"#7050a0",name:"High-income residential sector",qs:[
+   {cm:0,th:"suburban",q:"Councilmember Rivera asks: In the sector era, suburbanization is no longer uniform \u2014 it follows specific corridors. Which households suburbanize along the most desirable routes, and what does that tell us about how transportation shapes inequality?",choices:["High-income households claim the fastest, most pleasant corridors \u2014 their wealth lets them choose the best route outward","All income groups suburbanize equally along all corridors, with no relationship between income and corridor quality","Lower-income households suburbanize first because they need the cheaper land prices found in the outer sectors","Suburbanization in the sector model is entirely random and unrelated to transportation corridor quality"],correct:0,exp:"Suburbanization in the sector model is not equal \u2014 it is directional and income-stratified. Wealthy households claim the corridor with the fastest transit access and least industrial nuisance. Lower-income groups end up adjacent to industry. Transportation infrastructure doesn\u2019t just enable suburbanization \u2014 it determines who gets to suburbanize into desirable areas and who doesn\u2019t."}
+  ]},
+ ]
+},
+{key:"nuclei",name:"Multiple Nuclei Era",model:"Multiple Nuclei Model",year:"1940s\u20131960s",src:"Harris & Ullman, 1945",stamp:"#4ade80",
+ ctx:"Maplewood now has multiple economic centers. Early automobile ownership allows land uses to decouple from the single CBD. Specialized nodes have formed for industry, high-income residential, and outlying retail.",
+ summary:"Early automobile ownership and expanding road networks allowed Maplewood\u2019s land uses to decouple from the single CBD. Industry formed its own nucleus near the rail yard. High-income residential moved as far as possible from industrial nuisance. Secondary business districts emerged as suburban populations grew large enough to support local retail. Maplewood is now polycentric.",
+ detail:"Harris and Ullman identified four principles: different activities cluster near their own required infrastructure; similar activities benefit from co-location; incompatible uses repel each other; some uses cannot afford premium locations. These four forces \u2014 not a single bid-rent gradient \u2014 explain Maplewood\u2019s multi-nuclear form.",
+ bidrent:"Multiple local bid-rent peaks form around each nucleus. Industry and high-income residential actively repel each other. Cheap land near industry attracts low-income residential. Secondary nuclei create new local peaks as suburban population grows large enough to support them.",
+ council:"The Council wants you to explain how early auto ownership, housing location by income, economic activity across multiple nodes, and suburban decentralization all shaped Maplewood\u2019s polycentric structure.",
+ themes:["transport","housing","economic","suburban"],
+ legends:[{fill:"#FFD700",stroke:"#b8960a",label:"CBD"},{fill:"#F0A8D0",stroke:"#b06090",label:"Wholesale / light mfg."},{fill:"#90C060",stroke:"#5a8030",label:"Low-class residential"},{fill:"#70B0E0",stroke:"#3070a0",label:"Medium-class residential"},{fill:"#8B6090",stroke:"#5a3a6a",label:"High-class residential"},{fill:"#E8784A",stroke:"#b04818",label:"Heavy manufacturing"},{fill:"#60C0B0",stroke:"#308070",label:"Outlying business dist."},{fill:"#2E7D52",stroke:"#1a5235",label:"Residential suburb"},{fill:"#e8e0a0",stroke:"#908040",label:"Industrial suburb"}],
+ zones:[
+  {id:"mn-midinc",fill:"#70B0E0",stroke:"#3070a0",name:"Medium-class residential",qs:[
+   {cm:1,th:"transport",q:"Councilmember Chen asks: Early car ownership is transforming where Maplewood\u2019s residents can live. How does access to an automobile change the relationship between housing location and distance from the CBD?",choices:["Cars free households from transit routes, allowing them to live anywhere within driving distance \u2014 decoupling housing location from the old single-center logic","Cars have no effect on housing location because most workers still walk to factory jobs in this era","Automobile ownership makes the CBD more attractive for residential use by reducing downtown congestion","Car access forces all residents closer to the CBD because highway construction eliminates suburban housing"],correct:0,exp:"The automobile is the key transportation shift of this era. When households are no longer tied to transit routes, they can choose housing locations that aren\u2019t organized around a single center. Early car ownership begins to decouple housing location from the CBD-focused logic of earlier models \u2014 laying the groundwork for the full decentralization of the galactic city."}
+  ]},
+  {id:"mn-hiinc",fill:"#8B6090",stroke:"#5a3a6a",name:"High-class residential",qs:[
+   {cm:4,th:"housing",q:"Councilmember Torres asks: In Maplewood\u2019s multiple nuclei era, high-income residential has moved as far as possible from the industrial nucleus. What determines where wealthy households locate their housing in a polycentric city?",choices:["Wealthy households locate where amenities are highest and industrial nuisances are farthest away \u2014 economic power buys the most desirable location","High-income housing clusters immediately adjacent to industrial nodes to benefit from their economic activity","Wealthy households always locate at the geographic center of the metro area regardless of which model applies","High-income housing scatters randomly in a polycentric city with no predictable relationship to industry or amenities"],correct:0,exp:"In every urban model, housing location reflects economic power. Wealthy households have the resources to locate wherever industrial nuisance is minimized and amenities are maximized. In the multiple nuclei model, that means the opposite side of the city from the industrial nucleus. The principle is consistent across models: income determines which locations are accessible."}
+  ]},
+  {id:"mn-cbd",fill:"#FFD700",stroke:"#b8960a",name:"CBD",qs:[
+   {cm:0,th:"economic",q:"Councilmember Rivera asks: Maplewood now has multiple economic centers \u2014 industrial nodes, outlying business districts, residential suburbs. How has economic activity changed its relationship to the CBD in this era?",choices:["Economic activity has begun to decentralize into specialized nodes \u2014 the CBD no longer monopolizes all commercial and industrial activity","The CBD has expanded in this era to absorb all industrial and retail activity, becoming even more dominant than before","Economic activity remains exclusively at the CBD; other apparent nodes are simply residential areas with no economic function","All economic activity has fully left the CBD and relocated to the suburban fringe, leaving downtown empty"],correct:0,exp:"The multiple nuclei model marks the beginning of economic decentralization. Industry clusters near its own infrastructure node; retail clusters where suburban population is dense enough to support it. The CBD still exists but no longer monopolizes economic activity. This shift \u2014 economic activity following accessibility rather than proximity to a single center \u2014 defines the polycentric city."}
+  ]},
+  {id:"mn-sec",fill:"#60C0B0",stroke:"#308070",name:"Outlying business district",qs:[
+   {cm:3,th:"suburban",q:"Councilmember Patel asks: An outlying business district has formed in Maplewood\u2019s suburbs with no city planning involvement. What does this tell us about how suburbanization is changing in this era \u2014 and what comes next?",choices:["As suburbs grow large enough to generate their own demand, economic activity follows population outward \u2014 suburbanization is now creating new centers, not just spreading housing","Outlying business districts only form when the CBD declines \u2014 suburban retail is always a response to downtown failure","Suburban business districts are planned by city governments to relieve CBD congestion and distribute services evenly","Suburbanization in this era only involves housing \u2014 economic activity remains exclusively at the CBD until the next model"],correct:0,exp:"The outlying business district is a preview of the edge city. When enough suburban population accumulates, it generates sufficient local demand to support retail and services \u2014 and economic activity follows. Suburbanization in the multiple nuclei era is no longer just a residential phenomenon. It is the beginning of full decentralization: population moves out first, then economic activity follows."}
+  ]},
+ ]
+},
+{key:"galactic",name:"Galactic City Era",model:"Galactic City Model",year:"1970s\u2013Present",src:"Garreau, 1991",stamp:"#f6c90e",
+ ctx:"The Interstate era has reshaped Maplewood entirely. Edge cities have emerged at beltway interchanges. The old CBD sits near one edge of a sprawling auto-dependent metropolis. Economic activity has fully decentralized.",
+ summary:"Post-WWII Interstate construction and mass car ownership transformed Maplewood. The old downtown no longer anchors growth \u2014 highway interchanges have become new bid-rent peaks. Office parks, regional malls, and airport employment clusters now compete with the old central city for commercial tenants. Low-density suburban residential fills the spaces between nodes. The city is fully polycentric and auto-dependent.",
+ detail:"The galactic city model\u2019s defining insight: accessibility is no longer measured by distance from downtown, but by ease of highway access. This single shift explains everything \u2014 why suburbs sprawl, why malls need surface parking, why edge cities boom at interchanges, and why the old CBD may be declining.",
+ bidrent:"Multiple bid-rent peaks form at highway interchanges rather than just downtown. The old CBD peak flattens as its accessibility advantage erodes. Residential fills the cheapest land between nodes. Economic activity \u2014 both secondary and tertiary sector \u2014 is fully polycentric.",
+ council:"The Council wants you to explain how the Interstate highway system, suburban housing sprawl, decentralized economic activity, and the decline of the old CBD all define Maplewood\u2019s galactic city structure.",
+ themes:["transport","housing","economic","suburban"],
+ legends:[{fill:"#FFD700",stroke:"#b8960a",label:"Central city"},{fill:"#90C060",stroke:"#5a8030",label:"Suburban residential"},{fill:"#D0B060",stroke:"#907020",label:"Shopping mall"},{fill:"#C0C0C0",stroke:"#707070",label:"Industrial district"},{fill:"#80B0C0",stroke:"#406070",label:"Office park"},{fill:"#A0C0A0",stroke:"#507050",label:"Service center"},{fill:"#8090A0",stroke:"#405060",label:"Airport complex"},{fill:"#C080A0",stroke:"#804060",label:"Employment & shopping"}],
+ zones:[
+  {id:"g-sub",fill:"#90C060",stroke:"#5a8030",name:"Suburban residential",qs:[
+   {cm:1,th:"transport",q:"Councilmember Chen asks: The Interstate Highway System fundamentally changed where Maplewood\u2019s residents can live. What is the direct relationship between highway infrastructure and the explosion of low-density suburban housing after World War II?",choices:["Highways made any location within driving distance accessible, collapsing the commute-cost barrier that once forced residents to live near the CBD","Highways had no effect on housing location because suburban development was already underway before the Interstate System was built","The Interstate System reduced suburban housing demand by making the CBD faster to reach from existing inner-ring neighborhoods","Highway construction increased housing density near the CBD by routing suburban residents back through downtown"],correct:0,exp:"The Interstate Highway System is the infrastructure event that defines this era. By making any highway-accessible location reachable within a short drive, it collapsed the commute-cost penalty that once kept residents close to the CBD. Housing location is no longer organized around transit routes or distance from a center \u2014 it is organized around highway access. Infrastructure shapes urban form."}
+  ]},
+  {id:"g-central",fill:"#FFD700",stroke:"#b8960a",name:"Central city (old CBD)",qs:[
+   {cm:2,th:"housing",q:"Councilmember Okafor asks: As Maplewood\u2019s suburbs have expanded outward, inner-ring neighborhoods near the old CBD have often been left behind. What explains the pattern of who ends up living in the central city versus the suburban fringe in the galactic era?",choices:["Lower-income residents without cars remain concentrated in inner-ring neighborhoods while those with cars and higher incomes suburbanize to the fringe","All income groups distribute evenly across the metropolitan area once highway access makes every location equally reachable","The central city attracts the highest-income residents because of its cultural amenities and proximity to CBD employment","Housing in the galactic city era is allocated randomly, with no relationship between income, car ownership, and location"],correct:0,exp:"Transportation access determines housing location in the galactic city just as it did in earlier eras \u2014 but now the calculus is reversed. Car ownership and highway access = ability to suburbanize. Residents without cars or with lower incomes remain in inner-ring neighborhoods near the old CBD, while those who can afford to drive outward do. The galactic city does not eliminate income-based housing sorting \u2014 it reshapes it around highway access."}
+  ]},
+  {id:"g-combined",fill:"#C080A0",stroke:"#804060",name:"Combined employment & shopping",qs:[
+   {cm:3,th:"economic",q:"Councilmember Patel asks: Edge cities like this combined employment and shopping node have become major centers of economic activity in Maplewood\u2019s metropolitan area. What does this tell us about where economic activity now concentrates \u2014 and what has happened to the old CBD\u2019s role?",choices:["Economic activity now concentrates wherever highway accessibility is highest \u2014 interchanges have replaced the CBD as the primary bid-rent peaks","The old CBD remains the dominant center of economic activity; edge nodes are merely secondary retail clusters with no major employment","Economic activity in the galactic city has dispersed so completely that no location has higher land values than any other","Edge city nodes only contain retail activity \u2014 major employment and office uses remain exclusively in the old downtown CBD"],correct:0,exp:"The galactic city\u2019s defining economic insight: accessibility is now measured by highway interchange location, not distance from downtown. Economic activity \u2014 office parks, regional malls, airport employment complexes \u2014 clusters wherever interchange accessibility is highest. The old CBD must now compete with these nodes rather than monopolizing economic activity. Decentralization of economic activity is complete."}
+  ]},
+  {id:"g-mall",fill:"#D0B060",stroke:"#907020",name:"Shopping mall",qs:[
+   {cm:0,th:"suburban",q:"Councilmember Rivera asks: Maplewood\u2019s suburban fringe is now filled with low-density housing, shopping malls, and office parks rather than farmland. What distinguishes galactic city suburbanization from the early suburbanization seen in the concentric zone era?",choices:["Galactic suburbanization is full decentralization \u2014 both housing AND economic activity have left the center, creating self-sufficient suburban nodes rather than just bedroom communities","Galactic suburbanization is identical to concentric zone suburbanization, just at a larger geographic scale with more residents","Suburbanization in the galactic era involves only residential land use \u2014 all economic activity remains anchored to the old CBD","The galactic city reversed suburbanization by concentrating all growth at the old CBD while pushing residential uses to the outermost fringe"],correct:0,exp:"Early suburbanization (concentric era) moved residents outward while economic activity stayed downtown. Galactic city suburbanization is qualitatively different: economic activity \u2014 retail, offices, industry \u2014 has followed population to the fringe. Suburbs are no longer just places to sleep; they are now self-sufficient economic nodes. This is complete decentralization, not just residential spread."}
+  ]},
+ ]
+}
+];
+
+const SORT_CORRECT=["concentric","sector","nuclei","galactic"];
+const SORT_CLUES={concentric:"Transit-dependent rings; secondary-sector workers walk to factory jobs",sector:"Rail corridors shape wedge-sector growth; transportation is destiny",nuclei:"Early auto ownership; mutual repulsion creates specialized nodes",galactic:"Interstates and beltways; edge cities bloom at highway interchanges"};
+
+// MINI MAPS
+function poly(pts,f,s){return svgEl("polygon",{points:pts.map(p=>p.join(",")).join(" "),fill:f,stroke:s||"#0003","stroke-width":"0.5"});}
+function miniConcentric(){
+  const W=100,H=100,cx=50,cy=50,s=mkSvg(W,H);
+  [{r:48,f:"#B090D0"},{r:38,f:"#70B0E0"},{r:28,f:"#90C060"},{r:18,f:"#E8A0A0"},{r:8,f:"#FFD700"}].forEach(r=>s.appendChild(svgEl("circle",{cx,cy,r:r.r,fill:r.f,stroke:"#0002","stroke-width":"0.5"})));return s;
+}
+function miniSector(){
+  const W=100,H=100,cx=50,cy=50,s=mkSvg(W,H);
+  const R=d=>d*Math.PI/180;
+  function arc(r1,r2,a1,a2,fill){
+    const x1=cx+r2*Math.cos(R(a1)),y1=cy+r2*Math.sin(R(a1)),x2=cx+r2*Math.cos(R(a2)),y2=cy+r2*Math.sin(R(a2)),x3=cx+r1*Math.cos(R(a2)),y3=cy+r1*Math.sin(R(a2)),x4=cx+r1*Math.cos(R(a1)),y4=cy+r1*Math.sin(R(a1)),lg=((a2-a1+360)%360)>180?1:0;
+    const d=r1===0?"M "+cx+" "+cy+" L "+x1+" "+y1+" A "+r2+" "+r2+" 0 "+lg+" 1 "+x2+" "+y2+" Z":"M "+x1+" "+y1+" A "+r2+" "+r2+" 0 "+lg+" 1 "+x2+" "+y2+" L "+x3+" "+y3+" A "+r1+" "+r1+" 0 "+lg+" 0 "+x4+" "+y4+" Z";
+    return svgEl("path",{d,fill,stroke:"#0002","stroke-width":"0.5"});
+  }
+  s.appendChild(arc(10,47,180,300,"#C0C0C0"));s.appendChild(arc(10,38,285,360,"#90C060"));s.appendChild(arc(10,47,120,185,"#70B0E0"));s.appendChild(arc(10,42,0,75,"#70B0E0"));s.appendChild(arc(10,47,60,125,"#B090D0"));s.appendChild(svgEl("circle",{cx,cy,r:10,fill:"#FFD700",stroke:"#0002","stroke-width":"0.5"}));return s;
+}
+function miniNuclei(){
+  const W=112,H=102,s=mkSvg(W,H);
+  s.appendChild(poly([[28,18],[65,12],[82,10],[92,20],[96,40],[88,62],[76,74],[58,74],[38,70],[26,58],[22,38]],"#70B0E0"));
+  s.appendChild(poly([[82,10],[102,6],[110,24],[106,52],[96,64],[88,62],[96,40],[92,20]],"#8B6090"));
+  s.appendChild(poly([[6,20],[28,20],[28,54],[6,54]],"#F0A8D0"));
+  s.appendChild(poly([[0,16],[6,16],[6,58],[28,58],[28,62],[16,70],[2,70],[0,56]],"#90C060"));
+  s.appendChild(poly([[28,12],[52,12],[52,18],[28,18]],"#90C060"));
+  s.appendChild(poly([[30,22],[46,22],[46,40],[30,40]],"#FFD700"));
+  s.appendChild(poly([[4,74],[20,74],[20,84],[4,84]],"#E8784A"));
+  s.appendChild(poly([[66,44],[80,44],[80,58],[66,58]],"#60C0B0"));
+  s.appendChild(poly([[98,2],[110,2],[110,14],[98,14]],"#2E7D52"));
+  s.appendChild(poly([[2,88],[20,88],[20,100],[2,100]],"#e8e0a0","#908040"));
+  return s;
+}
+function miniGalactic(){
+  const W=110,H=95,cx=56,cy=50,s=mkSvg(W,H);
+  s.appendChild(svgEl("ellipse",{cx,cy,rx:52,ry:44,fill:"#C8E0A8",stroke:"#5a8030","stroke-width":"1"}));
+  [{x:24,y:20,w:22,h:16,f:"#FFD700"},{x:68,y:6,w:22,h:13,f:"#D0B060"},{x:88,y:38,w:18,h:13,f:"#C0C0C0"},{x:68,y:64,w:20,h:13,f:"#80B0C0"},{x:30,y:68,w:20,h:12,f:"#A0C0A0"},{x:4,y:54,w:20,h:14,f:"#8090A0"},{x:4,y:20,w:22,h:16,f:"#C080A0"}].forEach(n=>s.appendChild(svgEl("rect",{x:n.x,y:n.y,width:n.w,height:n.h,fill:n.f,stroke:"#0002","stroke-width":"0.5",rx:"3"})));return s;
+}
+const MINI={concentric:miniConcentric,sector:miniSector,nuclei:miniNuclei,galactic:miniGalactic};
+
+// BRIEFINGS
+let bIdx=0,bSeen=new Set();
+function buildBriefings(){bIdx=0;bSeen.clear();renderBrief();}
+function briefNav(d){bIdx=Math.max(0,Math.min(3,bIdx+d));renderBrief();}
+function mk(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function renderBrief(){
+  bSeen.add(bIdx);saveState();const era=ERAS[bIdx];
+
+  // --- TABS ---
+  const nav=document.getElementById("brief-nav");nav.innerHTML="";
+  ERAS.forEach((e,i)=>{
+    const lk=i>Math.max(...bSeen)+1&&!bSeen.has(i);
+    const btn=mk("button","brief-tab"+(i===bIdx?" active":"")+(lk?" locked":""),e.name);
+    btn.disabled=lk;
+    btn.addEventListener("click",()=>{if(!lk){bIdx=i;renderBrief();}});
+    nav.appendChild(btn);
+  });
+
+  // --- BODY via DOM ---
+  const body=document.getElementById("brief-body");body.innerHTML="";
+  const grid=mk("div","brief-grid");
+
+  // casefile
+  const cf=mk("div","casefile");
+  const cfHead=mk("div","cf-head");
+  const stamp=mk("span","cf-stamp",era.src);stamp.style.color=era.stamp;stamp.style.borderColor=era.stamp;
+  cfHead.appendChild(stamp);
+  const cfTitleEl=mk("span","cf-title",era.model);cfHead.appendChild(cfTitleEl);
+  cf.appendChild(cfHead);
+
+  const cfBody=mk("div","cf-body");
+  cfBody.appendChild(mk("div","cf-era-name",era.name));
+  cfBody.appendChild(mk("div","cf-year",era.year));
+
+  const themes=mk("div","cf-themes");
+  era.themes.forEach(th=>{const s=mk("span","cf-theme",THL[th]);s.style.borderColor=THC[th]+"55";s.style.color=THC[th];s.style.background=THC[th]+"11";themes.appendChild(s);});
+  cfBody.appendChild(themes);
+
+  const p1=mk("p",null,era.summary);cfBody.appendChild(p1);
+  const p2=mk("p",null,era.detail);cfBody.appendChild(p2);
+
+  const br=mk("div","cf-bidrent");
+  br.appendChild(mk("div","cf-br-label","Bid-rent & housing"));
+  br.appendChild(mk("p","cf-br-text",era.bidrent));
+  cfBody.appendChild(br);cf.appendChild(cfBody);grid.appendChild(cf);
+
+  // sidebar
+  const sb=mk("div","brief-sidebar");
+  const mc=mk("div","map-card");
+  mc.appendChild(mk("div","map-card-title","Maplewood \u2014 "+era.name));
+  const mwrap=mk("div","map-wrap-inner");mwrap.id="bmap-"+era.key;mc.appendChild(mwrap);
+  const legGrid=mk("div","leg-grid");
+  era.legends.forEach(l=>{const li=mk("div","leg-item");const dot=mk("div","leg-dot");dot.style.background=l.fill;dot.style.borderColor=l.stroke;li.appendChild(dot);li.appendChild(document.createTextNode(l.label));legGrid.appendChild(li);});
+  mc.appendChild(legGrid);sb.appendChild(mc);
+
+  const cn=mk("div","council-note");
+  cn.appendChild(mk("div","cn-label","Council will challenge you on\u2026"));
+  cn.appendChild(mk("p","cn-text",era.council));
+  sb.appendChild(cn);grid.appendChild(sb);body.appendChild(grid);
+
+  // mini map
+  document.getElementById("bmap-"+era.key).appendChild(MINI[era.key]());
+
+  // footer controls
+  document.getElementById("b-prev").style.display=bIdx>0?"inline-block":"none";
+  document.getElementById("b-next").style.display=bIdx<3?"inline-block":"none";
+  const all=bSeen.size===4;
+  document.getElementById("b-start").style.display=all?"inline-block":"none";
+  document.getElementById("brief-hint").textContent=all?"All four case files reviewed. The Council is ready for you.":"Review all four eras to unlock the hearing ("+bSeen.size+"/4 reviewed).";
+}
+
+// GAME MAPS
+function addC(e,zId){e.style.cursor="pointer";e.addEventListener("click",()=>{if(!answered)jumpToZone(zId);});}
+function ovS(zId){
+  if(zId===qPool[qIdx]?.zoneId)return "#6c63ff";
+  const idxs=qPool.map((q,i)=>q.zoneId===zId?i:-1).filter(i=>i>=0);
+  if(idxs.every(i=>results[i]===true))return "#4ade80";
+  if(idxs.some(i=>results[i]===false))return "#f87171";
+  return null;
+}
+
+function drawConcentric(){
+  const W=280,H=280,cx=140,cy=140,s=mkSvg(W,H);
+  [{id:"c-uc",r:130,fill:"#B090D0",stroke:"#7050a0"},{id:"c-mc",r:104,fill:"#70B0E0",stroke:"#3070a0"},{id:"c-wc",r:78,fill:"#90C060",stroke:"#5a8030"},{id:"c-trans",r:52,fill:"#E8A0A0",stroke:"#a05050"},{id:"c-cbd",r:26,fill:"#FFD700",stroke:"#b8960a"}].forEach(r=>{
+    const ov=ovS(r.id),c=svgEl("circle",{cx,cy,r:r.r,fill:r.fill,stroke:ov||r.stroke,"stroke-width":ov?"3":"1.5"});addC(c,r.id);s.appendChild(c);
+  });
+  [{r:0,l:"CBD"},{r:39,l:"Transition"},{r:65,l:"Working class"},{r:91,l:"Middle class"},{r:117,l:"Commuter zone"}].forEach(x=>s.appendChild(svgT(x.l,cx,cy-x.r,"9","500","middle","#333")));
+  return s;
+}
+function drawSector(){
+  const W=280,H=280,cx=140,cy=140,s=mkSvg(W,H);
+  const R=d=>d*Math.PI/180;
+  function arc(r1,r2,a1,a2){
+    const x1=cx+r2*Math.cos(R(a1)),y1=cy+r2*Math.sin(R(a1)),x2=cx+r2*Math.cos(R(a2)),y2=cy+r2*Math.sin(R(a2)),x3=cx+r1*Math.cos(R(a2)),y3=cy+r1*Math.sin(R(a2)),x4=cx+r1*Math.cos(R(a1)),y4=cy+r1*Math.sin(R(a1)),lg=((a2-a1+360)%360)>180?1:0;
+    if(r1===0)return "M "+cx+" "+cy+" L "+x1+" "+y1+" A "+r2+" "+r2+" 0 "+lg+" 1 "+x2+" "+y2+" Z";
+    return "M "+x1+" "+y1+" A "+r2+" "+r2+" 0 "+lg+" 1 "+x2+" "+y2+" L "+x3+" "+y3+" A "+r1+" "+r1+" 0 "+lg+" 0 "+x4+" "+y4+" Z";
+  }
+  [{id:"s-ind",fill:"#C0C0C0",stroke:"#707070",segs:[[28,130,180,300]]},{id:"s-wc",fill:"#90C060",stroke:"#5a8030",segs:[[28,100,285,360],[55,80,180,210]]},{id:"s-mc",fill:"#70B0E0",stroke:"#3070a0",segs:[[28,130,120,185],[28,110,0,75]]},{id:"s-uc",fill:"#B090D0",stroke:"#7050a0",segs:[[28,130,60,125]]}].forEach(z=>{
+    const g=document.createElementNS(NS,"g");addC(g,z.id);
+    z.segs.forEach(([r1,r2,a1,a2])=>{const ov=ovS(z.id);g.appendChild(svgEl("path",{d:arc(r1,r2,a1,a2),fill:z.fill,stroke:ov||z.stroke,"stroke-width":ov?"2.5":"1"}));});s.appendChild(g);
+  });
+  const cbdG=document.createElementNS(NS,"g");addC(cbdG,"s-cbd");const cbdOv=ovS("s-cbd");
+  cbdG.appendChild(svgEl("circle",{cx,cy,r:28,fill:"#FFD700",stroke:cbdOv||"#b8960a","stroke-width":cbdOv?"2.5":"1"}));s.appendChild(cbdG);
+  [{a:240,r:80,l:"Industry"},{a:320,r:60,l:"Working class"},{a:155,r:75,l:"Middle class"},{a:38,r:65,l:"Middle class"},{a:90,r:78,l:"Upper class"},{a:270,r:0,l:"CBD"}].forEach(x=>{
+    s.appendChild(svgT(x.l,cx+x.r*Math.cos(x.a*Math.PI/180),cy+x.r*Math.sin(x.a*Math.PI/180),"9","500","middle","#333"));
+  });return s;
+}
+function drawNuclei(){
+  const W=380,H=320,s=mkSvg(W,H);
+  const lQ=[];
+  function lb(x,y,w,h){return svgEl("rect",{x:x-w/2,y:y-h/2,width:w,height:h,rx:"3",fill:"white","fill-opacity":"0.72","pointer-events":"none"});}
+  function zone(id,pts,fill,stroke,lines,lx,ly,bw){
+    const g=document.createElementNS(NS,"g");addC(g,id);
+    const ov=ovS(id);
+    g.appendChild(svgEl("polygon",{points:pts.map(v=>v.join(",")).join(" "),fill,stroke,"stroke-width":"1.5"}));
+    if(ov)g.appendChild(svgEl("polygon",{points:pts.map(v=>v.join(",")).join(" "),fill:"none",stroke:ov,"stroke-width":"3","pointer-events":"none"}));
+    const lh=12,pd=4,bh=lines.length*lh+pd*2,bww=bw||(lines.reduce((m,l)=>Math.max(m,l.length),0)*5.5+pd*2);
+    lQ.push(()=>{g.appendChild(lb(lx,ly,bww,bh));lines.forEach((ln,i,arr)=>g.appendChild(svgT(ln,lx,ly+(i-(arr.length-1)/2)*lh,"8","600","middle","#111")));});
+    s.appendChild(g);
+  }
+  function strip(id,pts,fill,stroke){const g=document.createElementNS(NS,"g");addC(g,id);const ov=ovS(id);g.appendChild(svgEl("polygon",{points:pts,fill,stroke,"stroke-width":"1.5"}));if(ov)g.appendChild(svgEl("polygon",{points:pts,fill:"none",stroke:ov,"stroke-width":"3","pointer-events":"none"}));s.appendChild(g);}
+  zone("mn-hiinc",[[118,14],[198,8],[248,14],[288,36],[300,80],[294,148],[272,194],[234,214],[188,218],[148,208],[118,180],[110,120],[112,60]],"#8B6090","#5a3a6a",["High-class","residential"],240,100,82);
+  zone("mn-midinc",[[56,58],[118,32],[164,24],[196,34],[206,80],[200,148],[178,178],[142,192],[102,186],[66,164],[48,128],[46,88]],"#70B0E0","#3070a0",["Medium-class","residential"],130,160,86);
+  zone("mn-ind",[[52,66],[98,66],[98,168],[52,168]],"#F0A8D0","#b06090",["Wholesale /","light mfg."],75,117,64);
+  strip("mn-lowinc","30,72 52,72 52,164 30,164","#90C060","#5a8030");
+  strip("mn-lowinc","98,36 154,22 168,34 98,52","#90C060","#5a8030");
+  strip("mn-lowinc","52,168 114,168 114,184 52,184","#90C060","#5a8030");
+  const lcg=document.createElementNS(NS,"g");addC(lcg,"mn-lowinc");
+  lcg.appendChild(lb(41,118,44,36));["Low-","class","res."].forEach((ln,i)=>lcg.appendChild(svgT(ln,41,107+i*12,"7.5","600","middle","#111")));s.appendChild(lcg);
+  zone("mn-cbd",[[100,76],[148,76],[148,142],[100,142]],"#FFD700","#b8960a",["CBD"],124,109,36);
+  const cbdg=document.createElementNS(NS,"g");addC(cbdg,"mn-cbd");const co=ovS("mn-cbd");
+  cbdg.appendChild(svgEl("polygon",{points:"148,96 182,96 182,118 148,118",fill:"#FFD700",stroke:"#b8960a","stroke-width":"1.5"}));
+  if(co)cbdg.appendChild(svgEl("polygon",{points:"148,96 182,96 182,118 148,118",fill:"none",stroke:co,"stroke-width":"3","pointer-events":"none"}));s.appendChild(cbdg);
+  zone("mn-heavy",[[18,196],[68,196],[68,234],[18,234]],"#E8784A","#b04818",["Heavy mfg."],43,215,50);
+  zone("mn-sec",[[170,110],[214,110],[214,156],[170,156]],"#60C0B0","#308070",["Outlying","bus. dist."],192,133,58);
+  zone("mn-sub",[[244,234],[308,234],[308,276],[244,276]],"#2E7D52","#1a5235",["Residential","suburb"],276,255,66);
+  zone("mn-isub",[[10,252],[76,252],[76,294],[10,294]],"#e8e0a0","#908040",["Industrial","suburb"],43,273,62);
+  lQ.forEach(fn=>fn());return s;
+}
+function drawGalactic(){
+  const W=320,H=248,cx=162,cy=126,rx=152,ry=116,s=mkSvg(W,H);
+  s.appendChild(svgEl("ellipse",{cx,cy,rx,ry,fill:"#C8E0A8",stroke:"#5a8030","stroke-width":"2"}));
+  const subOv=ovS("g-sub");if(subOv)s.appendChild(svgEl("ellipse",{cx,cy,rx,ry,fill:"none",stroke:subOv,"stroke-width":"3"}));
+  const sc=svgEl("ellipse",{cx,cy,rx,ry,fill:"transparent",stroke:"transparent","stroke-width":"8"});sc.style.cursor="pointer";sc.addEventListener("click",()=>{if(!answered)jumpToZone("g-sub");});s.appendChild(sc);
+  s.appendChild(svgT("Suburban residential",cx+30,cy+20,"9","500","middle","#3a6020"));
+  [[82,90,76,155],[82,90,70,105],[218,62,218,175],[218,62,265,128],[135,110,135,190]].forEach(([x1,y1,x2,y2])=>s.appendChild(svgEl("line",{x1,y1,x2,y2,stroke:"#ccaa44","stroke-width":"2","stroke-dasharray":"5 3"})));
+  [{id:"g-central",x:58,y:60,w:64,h:46,fill:"#FFD700",stroke:"#b8960a",label:"Central\ncity"},{id:"g-mall",x:198,y:22,w:68,h:36,fill:"#D0B060",stroke:"#907020",label:"Shopping\nmall"},{id:"g-ind",x:262,y:108,w:54,h:36,fill:"#C0C0C0",stroke:"#707070",label:"Industrial\ndistrict"},{id:"g-office",x:200,y:172,w:58,h:36,fill:"#80B0C0",stroke:"#406070",label:"Office\npark"},{id:"g-service",x:90,y:188,w:60,h:34,fill:"#A0C0A0",stroke:"#507050",label:"Service\ncenter"},{id:"g-airport",x:8,y:150,w:62,h:40,fill:"#8090A0",stroke:"#405060",label:"Airport\ncomplex"},{id:"g-combined",x:8,y:58,w:66,h:44,fill:"#C080A0",stroke:"#804060",label:"Employment\n& shopping"}].forEach(n=>{
+    const ov=ovS(n.id),g=document.createElementNS(NS,"g");addC(g,n.id);
+    g.appendChild(svgEl("rect",{x:n.x,y:n.y,width:n.w,height:n.h,fill:n.fill,stroke:ov||n.stroke,"stroke-width":ov?"3":"1.5",rx:"5"}));
+    n.label.split("\n").forEach((ln,i,arr)=>g.appendChild(svgT(ln,n.x+n.w/2,n.y+n.h/2+(i-(arr.length-1)/2)*12,"8.5","500","middle","#333")));
+    s.appendChild(g);
+  });return s;
+}
+const DRAW={concentric:drawConcentric,sector:drawSector,nuclei:drawNuclei,galactic:drawGalactic};
+
+let curEra="concentric",qPool=[],qIdx=0,totalCred=0,answered=false,results=[],allRes={};
+function initGame(){curEra="concentric";totalCred=0;allRes={};switchEra("concentric");}
+function eraObj(){return ERAS.find(e=>e.key===curEra);}
+function buildPool(){qPool=[];eraObj().zones.forEach(z=>z.qs.forEach((q,qi)=>qPool.push({zoneId:z.id,qIdx:qi})));qPool.sort(()=>Math.random()-.5);qIdx=0;results=new Array(qPool.length).fill(null);}
+function switchEra(k){curEra=k;answered=false;buildPool();renderEtabs();renderMap2();renderCtx();renderChallenge();renderPips();drawBidRent2();
+  document.getElementById("verdict").textContent="Select a zone on the map to receive a council challenge.";document.getElementById("verdict").className="verdict";document.getElementById("next-btn").style.display="none";}
+function renderEtabs(){
+  document.getElementById("era-tabs").innerHTML=ERAS.map(e=>'<button class="era-tab '+(e.key===curEra?"active":allRes[e.key]!==undefined?"done":"")+'" onclick="switchEra(\''+e.key+'\')">'+e.name+'</button>').join("");
+  document.getElementById("cred-score").textContent=totalCred;document.getElementById("sort-cred").textContent=totalCred;
+}
+function renderCtx(){const e=eraObj();document.getElementById("era-ctx").textContent="Maplewood, "+e.year+" \u2014 "+e.ctx;document.getElementById("map-title").textContent="Maplewood \u2014 "+e.name;}
+function renderMap2(){const w=document.getElementById("map-wrap");w.innerHTML="";w.appendChild(DRAW[curEra]());document.getElementById("map-legend").innerHTML=eraObj().legends.map(l=>'<div class="leg-item"><div class="leg-dot" style="background:'+l.fill+';border-color:'+l.stroke+'"></div>'+l.label+'</div>').join("");}
+function jumpToZone(zId){const idx=qPool.findIndex((q,i)=>q.zoneId===zId&&results[i]===null);if(idx===-1)return;qIdx=idx;renderChallenge();renderMap2();}
+function eraComplete(){
+  allRes[curEra]=[...results];const eIdx=ERAS.findIndex(e=>e.key===curEra),isLast=eIdx===ERAS.length-1,nk=isLast?null:ERAS[eIdx+1].key;
+  const ok=results.filter(r=>r===true).length;
+  document.getElementById("choices").innerHTML="";document.getElementById("next-btn").style.display="none";
+  document.getElementById("verdict").className="verdict ok";document.getElementById("verdict").textContent="Hearing complete \u2014 "+ok+"/"+results.length+" correct.";
+  document.getElementById("cc-theme").textContent="";
+  if(isLast){document.getElementById("cc-q").innerHTML='<div style="text-align:center;padding:8px 0"><div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:6px">All four hearings complete!</div><div style="font-size:11px;color:var(--text2);margin-bottom:14px">The Planning Commission awaits your Master Plan presentation.</div><button class="btn-gold" style="padding:8px 22px" onclick="goSort()">Present to Planning Commission &rarr;</button></div>';}
+  else{document.getElementById("cc-q").innerHTML='<div style="text-align:center;padding:8px 0"><div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">Hearing concluded.</div><div style="font-size:11px;color:var(--text2);margin-bottom:14px">Next session: <strong style="color:var(--text)">'+ERAS.find(e=>e.key===nk).name+'</strong></div><button class="btn-primary" style="padding:8px 20px" onclick="switchEra(\''+nk+'\')">Next hearing &rarr;</button></div>';}
+}
+function renderChallenge(){
+  if(qIdx>=qPool.length){eraComplete();return;}
+  const item=qPool[qIdx],zone=eraObj().zones.find(z=>z.id===item.zoneId),q=zone.qs[item.qIdx];answered=false;
+  const cm=CM[q.cm]||CM[0];
+  document.getElementById("cc-av").textContent=cm.init;document.getElementById("cc-av").style.background=cm.bg;
+  document.getElementById("cc-name").textContent=cm.name;document.getElementById("cc-role").textContent=cm.role;
+  document.getElementById("cc-theme").textContent=(THL[q.th]||"").toUpperCase();document.getElementById("cc-theme").style.color=THC[q.th]||"var(--accent2)";
+  document.getElementById("cc-q").innerHTML='<span class="cc-pill" style="background:'+zone.fill+';border:1px solid '+zone.stroke+';color:#222">'+zone.name+'</span><br><span style="font-size:11px">'+q.q+'</span>';
+  const sh=q.choices.map((c,i)=>({text:c,orig:i})).sort(()=>Math.random()-.5);
+  document.getElementById("choices").innerHTML=sh.map(c=>'<button class="choice-btn" onclick="answer('+c.orig+','+q.correct+',\''+item.zoneId+'\',this)">'+c.text+'</button>').join("");
+  document.getElementById("verdict").textContent="Choose the best planning justification.";document.getElementById("verdict").className="verdict";document.getElementById("next-btn").style.display="none";
+}
+function answer(chosen,correct,zId,btn){
+  if(answered)return;answered=true;
+  const item=qPool[qIdx],zone=eraObj().zones.find(z=>z.id===item.zoneId),q=zone.qs[item.qIdx];
+  const isOk=chosen===correct;if(isOk)totalCred+=10;results[qIdx]=isOk;
+  document.getElementById("cred-score").textContent=totalCred;document.getElementById("sort-cred").textContent=totalCred;
+  document.querySelectorAll(".choice-btn").forEach(b=>b.disabled=true);btn.className="choice-btn "+(isOk?"correct":"wrong");
+  if(!isOk)document.querySelectorAll(".choice-btn").forEach(b=>{const m=b.getAttribute("onclick").match(/answer\((\d+)/);if(m&&parseInt(m[1])===correct)b.className="choice-btn reveal";});
+  const vd=document.getElementById("verdict");vd.className="verdict "+(isOk?"ok":"bad");
+  vd.textContent=(isOk?"The Council accepts your analysis. ":"The Council challenges that response. ")+q.exp;
+  renderPips();renderMap2();document.getElementById("next-btn").style.display="block";
+}
+function nextQ(){const nxt=results.findIndex(r=>r===null);if(nxt===-1){eraComplete();return;}qIdx=nxt;answered=false;renderChallenge();renderMap2();document.getElementById("verdict").textContent="Choose the best planning justification.";document.getElementById("verdict").className="verdict";}
+function renderPips(){document.getElementById("pip-row").innerHTML=qPool.map((q,i)=>{let c="pip";if(results[i]===true)c+=" ok";else if(results[i]===false)c+=" bad";else if(i===qIdx)c+=" cur";return '<div class="'+c+'"></div>';}).join("");}
+function drawBidRent2(){
+  const c=document.getElementById("bid-canvas");if(!c)return;
+  const ctx=c.getContext("2d"),W=256,H=106;ctx.fillStyle="#161b27";ctx.fillRect(0,0,W,H);
+  const px=30,py=7,pw=W-px-7,ph=H-py-19;
+  ctx.strokeStyle="#2a3350";ctx.lineWidth=.5;for(let i=0;i<=3;i++){ctx.beginPath();ctx.moveTo(px,py+ph*i/3);ctx.lineTo(px+pw,py+ph*i/3);ctx.stroke();}
+  ctx.strokeStyle="#8890b0";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px,py+ph);ctx.lineTo(px+pw,py+ph);ctx.stroke();
+  const isG=curEra==="galactic";
+  const curves=isG?[{l:"Old CBD",c:"#6c63ff",p:[[0,.9],[.08,.75],[.2,.42],[.4,.18],[1,.04]]},{l:"Edge nodes",c:"#f6c90e",p:[[0,.1],[.28,.14],[.38,.52],[.48,.14],[.62,.46],[.72,.14],[1,.06]]},{l:"Residential",c:"#4ade80",p:[[0,.38],[.3,.32],[.6,.24],[1,.08]]}]:[{l:"Commercial",c:"#6c63ff",p:[[0,1],[.15,.82],[.4,.5],[.7,.2],[1,.04]]},{l:"Industrial",c:"#f6c90e",p:[[0,.72],[.2,.55],[.5,.3],[.75,.12],[1,.02]]},{l:"Residential",c:"#4ade80",p:[[0,.48],[.3,.38],[.55,.28],[.8,.15],[1,.04]]}];
+  curves.forEach(cv=>{ctx.strokeStyle=cv.c;ctx.lineWidth=1.5;ctx.beginPath();cv.p.forEach((pp,i)=>{const x=px+pp[0]*pw,y=py+ph-pp[1]*ph*.88-ph*.06;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle=cv.c;ctx.font="9px sans-serif";const last=cv.p[cv.p.length-1];ctx.fillText(cv.l,px+last[0]*pw-42,py+ph-last[1]*ph*.88-ph*.06-3);});
+  ctx.fillStyle="#8890b0";ctx.font="9px sans-serif";ctx.fillText("Distance from CBD",px+pw/2-38,py+ph+12);ctx.save();ctx.translate(8,py+ph/2+12);ctx.rotate(-Math.PI/2);ctx.fillText("Land rent",0,0);ctx.restore();
+}
+
+// SORT
+let sortOrder=[...SORT_CORRECT].sort(()=>Math.random()-.5),dSrc=null;
+function goSort(){sortOrder=[...SORT_CORRECT].sort(()=>Math.random()-.5);buildSort();showScreen("screen-sort");}
+function buildSort(){
+  const tl=document.getElementById("sort-tl");tl.innerHTML="";
+  ["Oldest","","","Newest"].forEach((l,i)=>tl.innerHTML+='<div class="tl-item" id="tl-'+i+'"><div class="tl-dot" id="tldot-'+i+'"></div><div class="tl-lbl">'+(l||"&nbsp;")+'</div></div>');
+  renderSortList();document.getElementById("sort-result").style.display="none";document.getElementById("sort-final").style.display="none";document.getElementById("sort-submit").style.display="block";
+}
+function renderSortList(){
+  const c=document.getElementById("sort-list");c.innerHTML="";
+  sortOrder.forEach((k,i)=>{
+    const era=ERAS.find(e=>e.key===k),item=document.createElement("div");
+    item.className="sort-item";item.dataset.key=k;item.dataset.idx=i;item.draggable=true;
+    item.innerHTML='<div class="sort-handle">&#8286;</div><div class="sort-num">'+(i+1)+'</div><div class="sort-mini" id="sm-'+k+'-'+i+'"></div><div class="sort-info"><div class="sort-name">'+era.model+'</div><div class="sort-clue">'+SORT_CLUES[k]+'</div></div>';
+    item.addEventListener("dragstart",()=>{dSrc=i;item.classList.add("dragging");});
+    item.addEventListener("dragend",()=>item.classList.remove("dragging"));
+    item.addEventListener("dragover",e=>{e.preventDefault();item.classList.add("drag-over");});
+    item.addEventListener("dragleave",()=>item.classList.remove("drag-over"));
+    item.addEventListener("drop",e=>{e.preventDefault();item.classList.remove("drag-over");const d=parseInt(item.dataset.idx);if(dSrc===null||dSrc===d)return;[sortOrder[dSrc],sortOrder[d]]=[sortOrder[d],sortOrder[dSrc]];renderSortList();});
+    c.appendChild(item);item.querySelector("#sm-"+k+"-"+i).appendChild(MINI[k]());
+  });
+}
+function checkSort(){
+  const allOk=sortOrder.every((k,i)=>k===SORT_CORRECT[i]);
+  const res=document.getElementById("sort-result");
+  res.style.display="block";
+  document.getElementById("sort-submit").style.display="none";
+  sortOrder.forEach((k,i)=>{
+    const correct=k===SORT_CORRECT[i];
+    const era=ERAS.find(e=>e.key===k);
+    document.getElementById("tldot-"+i).className="tl-dot "+(correct?"ok":"bad");
+    const lbl=document.getElementById("tl-"+i).querySelector(".tl-lbl");
+    lbl.innerHTML="";
+    const yr=document.createElement("div");
+    yr.style.cssText="font-size:10px;font-weight:700;color:"+(correct?"var(--green)":"var(--red)");
+    yr.textContent=(era.src.split(",")[1]||era.year.split("–")[0]).trim();
+    const nm=document.createElement("div");
+    nm.style.cssText="font-size:9px;color:var(--text2)";
+    nm.textContent=era.model.split(" ").slice(0,2).join(" ");
+    lbl.appendChild(yr);lbl.appendChild(nm);
+  });
+  if(allOk){
+    totalCred+=20;
+    res.className="sort-result correct";
+    res.innerHTML="<strong>The Commission accepts your Master Plan. +20 credibility points.</strong><br><br>"
+      +"<strong>1925 — Concentric zone:</strong> Transit rings; secondary-sector workers walk to factory jobs in ring 2.<br>"
+      +"<strong>1939 — Sector model:</strong> Rail corridors create directional wedge sectors; transportation locks in land use.<br>"
+      +"<strong>1945 — Multiple nuclei:</strong> Early autos allow specialized nodes; mutual repulsion separates industry from high-income residential.<br>"
+      +"<strong>1991 — Galactic city:</strong> Interstates create multiple bid-rent peaks at beltway interchanges; the old CBD competes with edge cities.";
+  } else {
+    res.className="sort-result wrong";
+    res.innerHTML="The Commission is not satisfied. The correct order is:<br><br>"
+      +"<strong>1. Concentric zone (1925) → 2. Sector model (1939) → 3. Multiple nuclei (1945) → 4. Galactic city (1991)</strong><br><br>"
+      +"Think about what transportation technology existed at each date and how that shaped the urban form each model describes.";
+  }
+  document.getElementById("sort-cred").textContent=totalCred;
+  document.getElementById("sort-final").style.display="block";saveState();
+}
+
+// REPORT
+function buildReport(){
+  const maxGame=ERAS.reduce((s,e)=>s+e.zones.reduce((ss,z)=>ss+z.qs.length*10,0),0);
+  const maxTotal=maxGame+20;
+  const pct=Math.round(totalCred/maxTotal*100);
+  const rating=pct>=90?"Master Planner":pct>=75?"Senior Planner":pct>=60?"Associate Planner":"Planning Intern";
+  const msgs={
+    90:"The Council and Commission have full confidence in your planning expertise. Your command of bid-rent theory, transportation geography, and urban model evolution is exceptional.",
+    75:"You demonstrated strong understanding of urban geography principles. Review any areas where the Council challenged your responses.",
+    60:"You have a solid foundation in urban planning concepts. Focus on connecting bid-rent theory to specific zone locations in each era.",
+    0:"Continue reviewing the case files. Focus on the relationship between transportation infrastructure, land costs, and housing location across each era."
+  };
+  const msg=pct>=90?msgs[90]:pct>=75?msgs[75]:pct>=60?msgs[60]:msgs[0];
+
+  const wrap=document.getElementById("report-wrap");
+  wrap.innerHTML="";
+
+  // letterhead
+  const lh=mk("div","report-lh");
+  const sub=mk("div",null,"City of Maplewood — Planning Department");
+  sub.style.cssText="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px";
+  lh.appendChild(sub);
+  lh.appendChild(mk("h2",null,"Junior Planner Performance Report"));
+  lh.appendChild(mk("p",null,"Urban Models & Bid-Rent Theory · Council Hearing Assessment"));
+  wrap.appendChild(lh);
+
+  // stats
+  const sg=mk("div","stat-grid");
+  [[totalCred,"Credibility points"],[pct+"%","Overall performance"],[rating,"Planner rating"]].forEach(([n,l])=>{
+    const b=mk("div","stat-box");
+    const num=mk("div","stat-num",String(n));
+    if(l==="Planner rating")num.style.cssText="font-size:18px;color:var(--accent2)";
+    b.appendChild(num);b.appendChild(mk("div","stat-lbl",l));sg.appendChild(b);
+  });
+  wrap.appendChild(sg);
+
+  // era rows
+  ERAS.forEach(e=>{
+    const r=allRes[e.key]||[];
+    const ok=r.filter(x=>x===true).length;
+    const tot=e.zones.reduce((s,z)=>s+z.qs.length,0);
+    const row=mk("div","era-result");
+    row.appendChild(mk("div","era-result-name",e.name+" — "+e.model));
+    const pips=mk("div","era-pips");
+    r.forEach(x=>{const p=mk("div","era-pip "+(x===true?"ok":x===false?"bad":"skip"));pips.appendChild(p);});
+    for(let i=r.length;i<tot;i++){pips.appendChild(mk("div","era-pip skip"));}
+    row.appendChild(pips);
+    const sc=mk("div",null,ok+"/"+tot+" council challenges correct");
+    sc.style.cssText="font-size:10px;color:var(--text2);margin-top:3px";
+    row.appendChild(sc);wrap.appendChild(row);
+  });
+
+  // director note
+  const dn=mk("div","director-note");
+  dn.appendChild(mk("strong",null,"Director's Assessment"));
+  dn.appendChild(document.createTextNode(msg));
+  wrap.appendChild(dn);
+
+  // actions
+  const act=mk("div","report-actions no-print");
+  const b1=mk("button","btn-secondary","Print / Save as PDF");b1.onclick=()=>window.print();
+  const b2=mk("button","btn-secondary","Review case files");b2.onclick=()=>{showScreen("screen-brief");buildBriefings();};
+  const b3=mk("button","btn-primary","New hearing session");b3.onclick=()=>{showScreen("screen-game");initGame();};
+  act.appendChild(b1);act.appendChild(b2);act.appendChild(b3);wrap.appendChild(act);
+
+  // exit ticket
+  const pt=mk("div","print-ticket");
+  const tb=mk("div","ticket-box");
+  tb.appendChild(mk("h3",null,"Exit Ticket — Maplewood Urban Planning Assessment"));
+  const qs=[
+    "1. List the four urban models in chronological order and identify the key transportation technology associated with each era.",
+    "2. Explain why secondary-sector (factory) workers live near industry in early urban models. Use bid-rent theory in your answer.",
+    "3. In the galactic city model, why does the old CBD lose its bid-rent advantage? What replaced it as the primary accessibility node?",
+    "4. Choose one zone from any era of Maplewood's history. Explain its location using at least two concepts from the activity (bid-rent theory, transportation, housing location, or economic activity)."
+  ];
+  qs.forEach(q=>{
+    tb.appendChild(mk("div","t-q",q));
+    for(let i=0;i<3;i++)tb.appendChild(mk("div","t-line"));
+  });
+  const footer=mk("div",null);
+  footer.style.cssText="display:flex;gap:32px;margin-top:10px;font-size:11px;color:#555";
+  footer.appendChild(mk("span",null,"Name: _______________________________"));
+  footer.appendChild(mk("span",null,"Period: ________"));
+  footer.appendChild(mk("span",null,"Score: _____ / "+maxTotal+" pts"));
+  tb.appendChild(footer);pt.appendChild(tb);wrap.appendChild(pt);
+}
+
+// ── DEVELOPMENT BRIEF (6.6 / 6.7) ───────────────────────────────────
+let devCred=0;
+function updateDevCred(){document.getElementById("dev-cred").textContent=totalCred;}
+
+// density state
+let dzState={};
+let dzDragSrc=null;
+
+function chipDragStart(e,density){
+  dzDragSrc=density;e.dataTransfer.setData("text",density);
+}
+function dzOver(e){e.preventDefault();e.currentTarget.classList.add("drag-over");}
+function dzLeave(e){e.currentTarget.classList.remove("drag-over");}
+function dzDrop(e,zoneId){
+  e.preventDefault();e.currentTarget.classList.remove("drag-over");
+  const d=e.dataTransfer.getData("text")||dzDragSrc;
+  if(!d)return;
+  // if zone already has something, return chip to palette
+  if(dzState[zoneId]){returnChip(dzState[zoneId]);}
+  // place chip
+  dzState[zoneId]=d;
+  markChipUsed(d,true);
+  renderDzZone(zoneId,d);
+  // show check button if all zones filled
+  if(Object.keys(dzState).length===3){
+    document.getElementById("density-check-btn").style.display="inline-block";
+    document.getElementById("density-reset-btn").style.display="inline-block";
+  }
+}
+function removeFromZone(zoneId){
+  const d=dzState[zoneId];if(!d)return;
+  delete dzState[zoneId];
+  returnChip(d);
+  const zone=document.getElementById(zoneId);
+  zone.innerHTML="";zone.className="density-zone";zone.setAttribute("ondragover","dzOver(event)");zone.setAttribute("ondragleave","dzLeave(event)");zone.setAttribute("ondrop","dzDrop(event,'"+zoneId+"')");
+  renderDzEmpty(zoneId);
+  document.getElementById("density-check-btn").style.display="none";
+}
+function renderDzEmpty(zoneId){
+  const zone=document.getElementById(zoneId);
+  // restore icon and label from original data
+  const icons={"dzone-cbd":"&#x1F3D9;","dzone-mid":"&#x1F306;","dzone-fringe":"&#x1F33F;"};
+  const labels={"dzone-cbd":"Sub-district A<br>Adjacent to downtown CBD<br><span style='color:var(--text3);font-size:9px'>High land cost &middot; strong transit &middot; dense existing fabric</span>","dzone-mid":"Sub-district B<br>Inner-ring transition area<br><span style='color:var(--text3);font-size:9px'>Moderate land cost &middot; bus access &middot; mixed use nearby</span>","dzone-fringe":"Sub-district C<br>Suburban fringe parcel<br><span style='color:var(--text3);font-size:9px'>Low land cost &middot; car-dependent &middot; near highway on-ramp</span>"};
+  zone.innerHTML='<div class="dz-icon">'+icons[zoneId]+'</div><div class="dz-label">'+labels[zoneId]+'</div>';
+}
+function renderDzZone(zoneId,density){
+  const zone=document.getElementById(zoneId);
+  const meta={high:{label:"High-density",color:"#6c63ff",bg:"#6c63ff14"},med:{label:"Medium-density",color:"#4fd1c5",bg:"#4fd1c510"},low:{label:"Low-density",color:"#4ade80",bg:"#4ade8010"}};
+  const m=meta[density];
+  zone.className="density-zone filled";zone.style.borderColor=m.color;zone.style.background=m.bg;
+  zone.innerHTML="";
+  const removeBtn=document.createElement("button");
+  removeBtn.className="dz-remove";removeBtn.title="Remove";removeBtn.textContent="×";
+  removeBtn.onclick=()=>removeFromZone(zoneId);
+  const placed=document.createElement("div");
+  placed.className="dz-placed";placed.style.color=m.color;placed.style.background=m.bg;placed.textContent=m.label;
+  zone.appendChild(removeBtn);zone.appendChild(placed);
+}
+function markChipUsed(density,used){
+  const chip=document.getElementById("chip-"+density);
+  if(used){chip.classList.add("used");chip.draggable=false;}
+  else{chip.classList.remove("used");chip.draggable=true;}
+}
+function returnChip(density){markChipUsed(density,false);}
+function resetDensity(){
+  dzState={};
+  ["dzone-cbd","dzone-mid","dzone-fringe"].forEach(id=>{
+    const z=document.getElementById(id);z.className="density-zone";z.style.borderColor="";z.style.background="";
+    renderDzEmpty(id);
+  });
+  ["high","med","low"].forEach(d=>markChipUsed(d,false));
+  document.getElementById("density-check-btn").style.display="none";
+  document.getElementById("density-reset-btn").style.display="none";
+  document.getElementById("density-verdict").style.display="none";
+  document.getElementById("density-qs").style.display="none";
+}
+function checkDensity(){
+  const zones=["dzone-cbd","dzone-mid","dzone-fringe"];
+  let allOk=true;
+  zones.forEach(id=>{
+    const zone=document.getElementById(id);
+    const correct=zone.dataset.correct;
+    const placed=dzState[id];
+    if(placed===correct){zone.classList.add("correct");zone.classList.remove("incorrect");}
+    else{zone.classList.add("incorrect");zone.classList.remove("correct");allOk=false;}
+  });
+  const vd=document.getElementById("density-verdict");
+  vd.style.display="block";
+  if(allOk){
+    totalCred+=15;updateDevCred();
+    vd.className="density-verdict ok";
+    vd.innerHTML="<strong>Zoning plan approved. +15 credibility points.</strong> High-density adjacent to the CBD maximizes the use of existing infrastructure and transit access. Medium-density in the transition ring balances cost and supply. Low-density on the car-dependent fringe reflects the lower land values and infrastructure costs there.";
+    document.getElementById("density-check-btn").style.display="none";
+    document.getElementById("density-reset-btn").style.display="none";
+  } else {
+    vd.className="density-verdict bad";
+    vd.innerHTML="Some zones are mismatched. Think about: where is land most expensive? Where is transit access strongest? Density follows infrastructure investment and land cost — not the other way around. Try again.";
+    document.getElementById("density-reset-btn").style.display="inline-block";
+    return;
+  }
+  // reveal follow-up questions
+  buildDensityQs();saveState();
+}
+
+const DENSITY_QS=[
+  {q:"Councilmember Okafor asks: The city wants to increase housing supply near the CBD without expanding the city’s footprint. Which planning strategy directly addresses this goal?",
+   choices:["Infill development — building on vacant or underused parcels within the existing urban fabric","Urban growth boundaries — restricting all new construction to land outside the current city limits","Greenbelts — preserving undeveloped land around the city to prevent any new residential building","Exurban expansion — building low-density housing far beyond the suburban fringe"],
+   correct:0,exp:"Infill development increases density within the existing urban footprint by building on vacant, underused, or previously developed parcels. It maximizes existing infrastructure rather than extending costly new infrastructure to undeveloped land."},
+  {q:"Councilmember Rivera asks: Maplewood’s low-density suburban fringe generates a ‘fiscal squeeze’ for the city budget. What does this mean?",
+   choices:["Low-density areas generate less tax revenue per acre but require the same or more infrastructure investment per resident as high-density areas","Suburban residents pay the highest property taxes in the city and therefore consume the largest share of city services","Low-density housing creates such high demand for schools and parks that the city cannot zone it legally","The city cannot collect property taxes from car-dependent suburban areas because residents use county roads instead"],
+   correct:0,exp:"Low-density sprawl is fiscally inefficient: roads, water lines, and services must stretch farther to reach fewer taxpayers per mile. The revenue generated per acre is far below what dense development produces, creating a structural budget gap — the fiscal squeeze."},
+  {q:"Councilmember Chen asks: A developer wants to build a transit-oriented development (TOD) near Maplewood’s new light-rail station. What defines a TOD, and why does it make geographic sense at that location?",
+   choices:["Mixed-use, high-density development clustered within walking distance of a transit station — it maximizes the accessibility value created by the infrastructure","A large surface parking lot adjacent to a transit station so that commuters can drive and then switch to rail","Low-density, single-family housing built specifically to attract residents who do not own cars to the transit corridor","A shopping mall placed at the transit station to generate retail sales tax revenue for the transit authority"],
+   correct:0,exp:"TOD clusters mixed-use, walkable, higher-density development around transit nodes. The transit station creates an accessibility peak — exactly where bid-rent theory predicts higher land values and denser development to be economically viable. TOD capitalizes on that accessibility rather than wasting it."},
+];
+
+let dqAnswered=[];
+function buildDensityQs(){
+  dqAnswered=new Array(DENSITY_QS.length).fill(false);
+  const container=document.getElementById("dq-container");container.innerHTML="";
+  DENSITY_QS.forEach((q,i)=>{
+    const block=document.createElement("div");block.className="infra-qblock";block.id="dq-"+i;
+    const p=document.createElement("p");p.textContent=q.q;block.appendChild(p);
+    const ch=document.createElement("div");ch.className="infra-choices";
+    const sh=q.choices.map((c,ci)=>({t:c,o:ci})).sort(()=>Math.random()-.5);
+    sh.forEach(c=>{
+      const b=document.createElement("button");b.className="choice-btn";b.textContent=c.t;
+      b.onclick=()=>answerDevQ(i,c.o,q.correct,q.exp,block);
+      ch.appendChild(b);
+    });
+    block.appendChild(ch);
+    const vd=document.createElement("div");vd.className="infra-verdict";vd.id="dqv-"+i;block.appendChild(vd);
+    container.appendChild(block);
+  });
+  document.getElementById("density-qs").style.display="block";
+}
+
+let infraQsAnswered=[];
+function answerDevQ(idx,chosen,correct,exp,block){
+  const btns=block.querySelectorAll(".choice-btn");btns.forEach(b=>b.disabled=true);
+  const isOk=chosen===correct;
+  if(isOk){totalCred+=10;updateDevCred();}
+  btns.forEach(b=>{
+    const txt=b.textContent;
+    const origIdx=DENSITY_QS[idx]?.choices.indexOf(txt)??-1;
+    if(origIdx===correct)b.classList.add(isOk&&origIdx===chosen?"correct":"reveal");
+    else if(origIdx===chosen&&!isOk)b.classList.add("wrong");
+  });
+  // fix: match by position in shuffled set isn't reliable — just mark by correct content
+  btns.forEach(b=>{
+    if(b.disabled){
+      // find which original index this button is
+      const oi=DENSITY_QS.length>idx?DENSITY_QS[idx].choices.indexOf(b.textContent):-1;
+      if(oi===correct)b.classList.add("reveal");
+    }
+  });
+  // simpler correct-reveal approach
+  btns.forEach(b=>{b.classList.remove("reveal","correct","wrong");});
+  btns.forEach(b=>{
+    const oi=DENSITY_QS[idx]?DENSITY_QS[idx].choices.indexOf(b.textContent):-1;
+    if(oi===chosen&&isOk)b.classList.add("correct");
+    else if(oi===chosen&&!isOk)b.classList.add("wrong");
+    else if(oi===correct)b.classList.add("reveal");
+  });
+  const vd=document.getElementById("dqv-"+idx);
+  vd.style.display="block";vd.className="infra-verdict "+(isOk?"ok":"bad");
+  vd.textContent=(isOk?"The Council accepts your analysis. ":"The Council challenges that response. ")+exp;
+  dqAnswered[idx]=true;
+  if(dqAnswered.every(Boolean))document.getElementById("density-advance-btn").style.display="inline-block";saveState();
+}
+
+function advanceToPart2(){
+  document.getElementById("dev-part2").style.display="block";
+  document.getElementById("dstep-1").classList.remove("active");document.getElementById("dstep-1").classList.add("done");
+  document.getElementById("dstep-2").classList.add("active");
+  document.getElementById("dev-part2").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+// infrastructure
+let infraSelected=null,infraQsDone=[];
+const INFRA_QS=[
+  {q:"Councilmember Chen asks: The highway interchange option would accelerate growth on Maplewood’s suburban fringe. Based on what we know about infrastructure’s role in shaping spatial development, what is the most predictable long-term consequence?",
+   choices:["Low-density sprawl expands outward, raising per-capita infrastructure costs and increasing car dependency for all residents","The interchange concentrates high-density mixed-use development around the interchange node, mimicking a transit-oriented development","Highway infrastructure universally reduces housing costs across the entire metropolitan area by opening up new land for development","The city’s downtown automatically strengthens as suburban growth funnels commuters back into the CBD each day"],
+   correct:0,exp:"Infrastructure shapes where development goes. A new highway interchange creates accessibility at the fringe — attracting low-density, car-dependent sprawl. Per-capita infrastructure costs rise as roads and services must reach farther for fewer taxpayers per acre. This is the spatial feedback loop the galactic city model describes."},
+  {q:"Councilmember Torres asks: Maplewood’s lower-income residents are concentrated in inner-ring neighborhoods. Which infrastructure choice better addresses the geographic inequality in access to jobs and services — and why?",
+   choices:["Light-rail, because it connects lower-income inner-ring residents to CBD employment without requiring car ownership","The highway interchange, because all residents benefit equally from reduced CBD traffic congestion regardless of income","Light-rail only benefits residents who live within one block of a station and is therefore geographically too narrow to address inequality","The highway interchange reaches more of the city’s geographic area and therefore distributes benefits more equitably than rail"],
+   correct:0,exp:"Infrastructure quality directly affects spatial patterns of economic and social development. Lower-income residents who do not own cars depend on transit to access jobs. Light-rail extending into inner-ring neighborhoods directly improves their geographic access to opportunity — a core function of urban infrastructure."},
+  {q:"Councilmember Patel asks: Regardless of which option the Council chooses, infrastructure investment will reshape Maplewood’s spatial patterns. Which statement best captures the AP Human Geography principle at work here?",
+   choices:["The location and quality of infrastructure directly affects a city’s spatial patterns of economic and social development","Infrastructure investment has no measurable effect on where residents or businesses choose to locate within a city","The city’s existing urban form will remain unchanged because land use patterns are determined solely by historical zoning decisions","Infrastructure only shapes development patterns in cities with populations over one million; smaller cities are unaffected"],
+   correct:0,exp:"This is the core 6.7 principle: infrastructure — roads, transit, utilities, communication systems — directly shapes where economic activity and population concentrate. Every model Maplewood studied (Burgess, Hoyt, Harris & Ullman, Garreau) reflects the urban form that emerged from the dominant infrastructure technology of its era."},
+];
+function selectInfra(opt){
+  infraSelected=opt;saveState();
+  document.getElementById("infra-opt-rail").classList.toggle("selected",opt==="rail");
+  document.getElementById("infra-opt-highway").classList.toggle("selected",opt==="highway");
+  document.getElementById("infra-select-hint").style.display="none";
+  buildInfraQs();
+}
+function buildInfraQs(){
+  infraQsDone=new Array(INFRA_QS.length).fill(false);
+  const wrap=document.getElementById("infra-qs-wrap");wrap.style.display="block";
+  const container=document.getElementById("iq-container");container.innerHTML="";
+  INFRA_QS.forEach((q,i)=>{
+    const block=document.createElement("div");block.className="infra-qblock";block.id="iq-"+i;
+    const p=document.createElement("p");p.textContent=q.q;block.appendChild(p);
+    const ch=document.createElement("div");ch.className="infra-choices";
+    const sh=q.choices.map((c,ci)=>({t:c,o:ci})).sort(()=>Math.random()-.5);
+    sh.forEach(c=>{
+      const b=document.createElement("button");b.className="choice-btn";b.textContent=c.t;
+      b.onclick=()=>answerInfraQ(i,c.o,q.correct,q.exp,block);
+      ch.appendChild(b);
+    });
+    block.appendChild(ch);
+    const vd=document.createElement("div");vd.className="infra-verdict";vd.id="iqv-"+i;block.appendChild(vd);
+    container.appendChild(block);
+  });
+}
+function answerInfraQ(idx,chosen,correct,exp,block){
+  const btns=block.querySelectorAll(".choice-btn");btns.forEach(b=>b.disabled=true);
+  const isOk=chosen===correct;if(isOk){totalCred+=10;updateDevCred();}
+  btns.forEach(b=>{
+    const oi=INFRA_QS[idx]?INFRA_QS[idx].choices.indexOf(b.textContent):-1;
+    if(oi===chosen&&isOk)b.classList.add("correct");
+    else if(oi===chosen&&!isOk)b.classList.add("wrong");
+    else if(oi===correct)b.classList.add("reveal");
+  });
+  const vd=document.getElementById("iqv-"+idx);
+  vd.style.display="block";vd.className="infra-verdict "+(isOk?"ok":"bad");
+  vd.textContent=(isOk?"The Council accepts your analysis. ":"The Council challenges that response. ")+exp;
+  infraQsDone[idx]=true;
+  if(infraQsDone.every(Boolean)){
+    document.getElementById("dev-finish-btn").style.display="block";saveState();
+    document.getElementById("dstep-2").classList.remove("active");document.getElementById("dstep-2").classList.add("done");
+    document.getElementById("dstep-3").classList.add("active");
+  }
+}
+</script>
+</body>
+</html>
